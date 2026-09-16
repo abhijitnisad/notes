@@ -1,0 +1,476 @@
+date:11-09-2026
+
+🐍 Python Notes — Complete Flow Before & Including Functions
+PHASE 1 — Python Fundamentals
+1. Introduction to Python
+What is Python?
+Why Python?
+Python features
+Interpreted vs compiled
+Python implementation basics
+Python execution flow
+.py files
+Python REPL
+Comments
+2. Python Syntax & Indentation
+Statements
+Indentation
+Blocks
+Whitespace
+Comments
+Multi-line statements
+3. Variables
+What is a variable?
+Creating variables
+Variable assignment
+Reassignment
+Multiple assignment
+Variable naming rules
+Naming conventions
+Dynamic typing
+
+Example:
+
+x = 10
+x = "Abhijit"
+PHASE 2 — Data Types
+4. What is a Data Type?
+Why data types are needed
+type()
+Dynamic typing
+Objects and types
+5. Numbers
+int
+float
+complex
+Arithmetic with numbers
+6. Boolean
+True
+False
+Boolean expressions
+7. None
+What is None?
+None vs 0
+None vs False
+is None
+8. Strings ⭐
+Creating strings
+Single/double/triple quotes
+Indexing
+Negative indexing
+Slicing
+String immutability
+String methods
+upper()
+lower()
+strip()
+replace()
+split()
+join()
+find()
+count()
+startswith()
+endswith()
+9. String Formatting
+Concatenation
+%
+.format()
+f-strings ⭐
+
+Example:
+
+name = "Abhijit"
+age = 21
+
+print(f"My name is {name} and I am {age}")
+PHASE 3 — Operators
+10. Arithmetic Operators
++
+-
+*
+/
+//
+%
+**
+11. Comparison Operators
+==
+!=
+>
+<
+>=
+<=
+12. Assignment Operators
+=
++=
+-=
+*=
+/=
+%=
+**=
+13. Logical Operators
+and
+or
+not
+14. Membership Operators
+in
+not in
+
+Example:
+
+"a" in "apple"
+15. Identity Operators ⭐
+is
+is not
+
+Important:
+
+==   # value comparison
+is   # identity comparison
+16. Bitwise Operators
+&
+|
+^
+~
+<<
+>>
+
+These become useful later in DSA.
+
+17. Operator Precedence
+Which operator executes first?
+Parentheses
+Precedence order
+PHASE 4 — Input & Output
+18. print()
+Printing values
+Multiple values
+sep
+end
+19. input()
+Taking user input
+Input always returns a string
+Converting input
+age = int(input("Enter age: "))
+20. Type Conversion / Type Casting
+int()
+float()
+str()
+bool()
+
+Also:
+
+list()
+tuple()
+set()
+dict()
+PHASE 5 — Conditional Statements
+21. if
+if condition:
+    ...
+22. if-else
+23. if-elif-else
+24. Nested if
+25. Conditional Expression / Ternary
+result = "Pass" if marks >= 40 else "Fail"
+26. Truthy & Falsy Values ⭐
+
+Understand why these behave as false:
+
+False
+None
+0
+0.0
+""
+[]
+{}
+set()
+PHASE 6 — Collections
+
+This is very important for DSA.
+
+27. Lists ⭐⭐⭐
+Creating lists
+Indexing
+Negative indexing
+Slicing
+Updating
+Adding elements
+append()
+extend()
+insert()
+Removing
+remove()
+pop()
+clear()
+sort()
+reverse()
+index()
+count()
+in
+List mutability
+Nested lists
+Copying lists
+28. Tuples
+Creating tuples
+Indexing
+Slicing
+Tuple packing
+Tuple unpacking
+Immutability
+Tuple vs list
+29. Sets
+Creating sets
+Adding/removing
+Membership
+Union
+Intersection
+Difference
+Symmetric difference
+Set operations
+Why sets are useful in DSA
+30. Dictionaries ⭐⭐⭐
+Key-value pairs
+Creating dictionaries
+Accessing values
+Adding/updating
+get()
+keys()
+values()
+items()
+pop()
+popitem()
+update()
+del
+clear()
+Checking keys
+Dictionary nesting
+Hashable keys
+Dictionary complexity
+Frequency counting
+PHASE 7 — Loops ⭐⭐⭐
+31. while Loop
+Syntax
+Condition
+Infinite loops
+while with counter
+32. for Loop
+Iterating over lists
+Iterating over strings
+Iterating over tuples
+Iterating over dictionaries
+range()
+33. break
+34. continue
+35. pass
+36. Nested Loops
+37. Loop else
+for x in arr:
+    ...
+else:
+    ...
+38. enumerate() ⭐
+for i, value in enumerate(arr):
+
+Understand:
+
+iterable
+   ↓
+enumerate()
+   ↓
+(index, value)
+39. zip() ⭐
+for name, amount in zip(names, amounts):
+
+Understand:
+
+list 1       list 2
+  ↓            ↓
+Aman  ─────→ 20
+Rahul ─────→ 30
+40. range()
+range(stop)
+range(start, stop)
+range(start, stop, step)
+Why stop is excluded
+PHASE 8 — Functions ⭐⭐⭐
+
+You are currently here.
+
+41. What is a Function?
+Why functions?
+Reusability
+Readability
+Reducing complexity
+Separation of concerns
+42. Defining & Calling Functions
+def greet():
+    print("Hello")
+
+greet()
+43. Parameters & Arguments
+Parameters
+Arguments
+Positional arguments
+Keyword arguments
+Default arguments
+44. return
+Returning values
+return vs print()
+Multiple returns
+return ends function execution
+45. Scope ⭐
+Local scope
+Global scope
+Enclosing/non-local scope
+Built-in scope
+LEGB rule
+global
+nonlocal
+46. Mutable vs Immutable Arguments
+Passing lists
+Passing dictionaries
+Object references
+Mutable default argument problem
+None as default
+47. *args
+48. **kwargs
+49. Argument Unpacking
+*
+**
+50. Function Objects
+Functions are objects
+Assign function to variable
+Pass function as argument
+Return function
+51. Nested Functions
+52. Lambda Functions
+53. Higher-Order Functions
+54. Recursion ⭐⭐⭐
+Base case
+Recursive case
+Call stack
+Stack frames
+Dry run
+Recursion vs iteration
+PHASE 9 — Python Concepts You Should Learn After Functions
+55. Comprehensions ⭐
+List comprehension
+Set comprehension
+Dictionary comprehension
+Conditional comprehensions
+
+Example:
+
+squares = [x * x for x in range(5)]
+56. Exception Handling
+try
+except
+else
+finally
+raise
+57. Modules
+import math
+import
+from ... import
+Aliases
+__name__
+__main__
+58. File Handling
+Open files
+Read
+Write
+Append
+with
+File modes
+59. OOP ⭐⭐⭐
+Class
+Object
+__init__
+self
+Instance variables
+Instance methods
+Class variables
+Class methods
+Static methods
+Encapsulation
+Inheritance
+Polymorphism
+Abstraction
+Method overriding
+Operator overloading
+Magic/dunder methods
+60. Iterators & Generators ⭐
+
+This will connect strongly with what you just learned about zip().
+
+Iterable
+Iterator
+iter()
+next()
+StopIteration
+Generator
+yield
+Generator expressions
+PHASE 10 — Advanced Python Useful for DSA
+61. map()
+62. filter()
+63. reduce()
+64. sorted() and custom keys
+65. any() / all()
+66. collections module ⭐
+
+
+
+
+
+
+
+
+
+Next Python Topics
+
+1. Comprehensions
+
+List comprehension
+Conditional list comprehension
+Nested list comprehension
+Set comprehension
+Dictionary comprehension
+Generator expressions
+Comprehension vs normal loops
+When to use / when not to use
+
+2. Iterators & Generators
+
+Iterable vs Iterator
+iter()
+next()
+StopIteration
+What is a Generator?
+yield
+yield vs return
+Generator execution flow
+Lazy evaluation
+Memory efficiency
+Generator expressions
+Practical use cases
+
+3. Decorators
+
+What is a decorator?
+Functions as objects
+Inner/wrapper functions
+Passing functions as arguments
+Returning functions
+@decorator syntax
+How decorators work internally
+functools.wraps
+Decorators with arguments
+*args and **kwargs in decorators
+Multiple decorators
+Practical use cases:
+Logging
+Authentication
+Validation
+Timing
+Caching
