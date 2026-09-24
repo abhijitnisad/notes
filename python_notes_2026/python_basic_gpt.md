@@ -11181,3 +11181,2262 @@ def decorator(func):
 ```
 
 **If you understand this pattern deeply, you understand the foundation of most Python decorators.**
+
+
+
+##########################################################################################################
+
+
+
+
+# 1. What is OOP? 🔥 Core
+
+## 1.1 What is OOP?
+
+**OOP (Object-Oriented Programming)** is a programming paradigm where we organize software around **objects** that contain:
+
+* **Data** → attributes/state
+* **Behavior** → methods/functions
+
+### Simple idea
+
+Instead of thinking only:
+
+> “What steps should the program perform?”
+
+OOP encourages us to think:
+
+> “What objects exist, what data do they have, and what can they do?”
+
+For example, in a banking application:
+
+```text
+BankAccount
+    │
+    ├── Data
+    │    ├── account_number
+    │    ├── owner
+    │    └── balance
+    │
+    └── Behavior
+         ├── deposit()
+         ├── withdraw()
+         └── check_balance()
+```
+
+An actual bank account would be an **object** created from this design.
+
+---
+
+# 1.2 Why OOP?
+
+As programs become larger, keeping everything as independent variables and functions can become difficult to manage.
+
+OOP helps organize related data and behavior together.
+
+### Without OOP
+
+You might have:
+
+```python
+account_name = "Abhijit"
+balance = 5000
+
+def deposit(balance, amount):
+    return balance + amount
+
+def withdraw(balance, amount):
+    return balance - amount
+```
+
+As the application grows, you may end up managing many separate variables and functions.
+
+### With OOP
+
+We can model the account as an object:
+
+```python
+class BankAccount:
+
+    def __init__(self, owner, balance):
+        self.owner = owner
+        self.balance = balance
+
+    def deposit(self, amount):
+        self.balance += amount
+
+    def withdraw(self, amount):
+        self.balance -= amount
+```
+
+Then:
+
+```python
+account = BankAccount("Abhijit", 5000)
+
+account.deposit(1000)
+account.withdraw(500)
+```
+
+The account's **data and behavior are grouped together**.
+
+---
+
+# 1.3 Main Idea of OOP
+
+A useful mental model is:
+
+```text
+             OBJECT
+          ┌───────────┐
+          │   Data    │
+          │           │
+          │ Attributes│
+          ├───────────┤
+          │ Behavior  │
+          │           │
+          │  Methods  │
+          └───────────┘
+```
+
+For a `Car` object:
+
+```text
+Car
+│
+├── Data
+│   ├── brand
+│   ├── color
+│   └── speed
+│
+└── Behavior
+    ├── start()
+    ├── accelerate()
+    └── brake()
+```
+
+The exact design depends on the application.
+
+---
+
+# 1.4 Procedural Programming vs OOP
+
+### Procedural approach
+
+Procedural programming focuses primarily on:
+
+> **Functions and the sequence of operations.**
+
+Example:
+
+```python
+balance = 5000
+
+def deposit(balance, amount):
+    return balance + amount
+
+balance = deposit(balance, 1000)
+```
+
+The data and functions are handled separately.
+
+---
+
+### OOP approach
+
+OOP focuses on:
+
+> **Objects that combine data and behavior.**
+
+```python
+class BankAccount:
+
+    def __init__(self, balance):
+        self.balance = balance
+
+    def deposit(self, amount):
+        self.balance += amount
+```
+
+Now:
+
+```python
+account = BankAccount(5000)
+account.deposit(1000)
+```
+
+### Comparison
+
+| Procedural                              | OOP                                  |
+| --------------------------------------- | ------------------------------------ |
+| Focuses on functions/procedures         | Focuses on objects                   |
+| Data and functions often separate       | Data and behavior are grouped        |
+| Good for smaller/simple programs        | Useful for larger/complex systems    |
+| Function-oriented organization          | Object-oriented organization         |
+| State is often passed between functions | Objects can maintain their own state |
+
+**Important:** This does not mean procedural programming is bad or that every program should use OOP. The appropriate approach depends on the problem.
+
+---
+
+# 1.5 Real-World Analogy
+
+Think about a **Student**.
+
+A student has:
+
+### Attributes — what the student has/is
+
+```text
+name
+age
+college
+roll_number
+```
+
+### Methods — what the student can do
+
+```text
+study()
+attend_class()
+submit_assignment()
+```
+
+So we can think:
+
+```text
+Student
+│
+├── Attributes
+│   ├── name
+│   ├── age
+│   └── college
+│
+└── Methods
+    ├── study()
+    ├── attend_class()
+    └── submit_assignment()
+```
+
+An individual student becomes an **object**:
+
+```text
+Student Class
+      │
+      ├── Object 1 → Abhijit
+      ├── Object 2 → Rahul
+      └── Object 3 → Priya
+```
+
+The class acts as the **blueprint/design**, while objects are actual instances created from it.
+
+> We'll study **classes and objects** in the next OOP topic.
+
+---
+
+# 1.6 When is OOP Useful?
+
+OOP becomes particularly useful when your application contains many entities with their own:
+
+* state
+* behavior
+* relationships
+* reusable logic
+
+Examples:
+
+### E-commerce
+
+```text
+User
+Product
+Cart
+Order
+Payment
+```
+
+### Banking
+
+```text
+Customer
+BankAccount
+Transaction
+Loan
+```
+
+### College Management
+
+```text
+Student
+Teacher
+Course
+Department
+Exam
+```
+
+### Backend Applications
+
+```text
+User
+Request
+Response
+Database
+Service
+Repository
+```
+
+### AI / GenAI Applications
+
+OOP can be useful for modeling components such as:
+
+```text
+LLMClient
+EmbeddingModel
+Document
+VectorStore
+Retriever
+Agent
+Tool
+```
+
+For example:
+
+```python
+class LLMClient:
+
+    def generate(self, prompt):
+        ...
+```
+
+Then different parts of an application can interact with an object representing the LLM client.
+
+---
+
+# 1.7 Benefits of OOP
+
+### 1. Organization
+
+Related data and behavior can be grouped together.
+
+### 2. Reusability
+
+Classes can be reused to create multiple objects.
+
+### 3. Maintainability
+
+Large applications can be divided into logical components.
+
+### 4. Encapsulation
+
+An object's internal state and implementation can be controlled through its interface.
+
+### 5. Extensibility
+
+Existing designs can be extended using concepts such as inheritance and composition.
+
+### 6. Abstraction
+
+Complex implementation details can be hidden behind simpler interfaces.
+
+These concepts will become clearer as we study:
+
+```text
+Class & Object
+      ↓
+Attributes & Methods
+      ↓
+Constructor
+      ↓
+Encapsulation
+      ↓
+Inheritance
+      ↓
+Polymorphism
+      ↓
+Abstraction
+      ↓
+Composition
+```
+
+---
+
+# 1.8 Important Terminology
+
+| Term          | Meaning                                               |
+| ------------- | ----------------------------------------------------- |
+| OOP           | Object-Oriented Programming                           |
+| Object        | An instance containing state/data and behavior        |
+| Class         | A blueprint/definition used to create objects         |
+| Attribute     | Data/state associated with an object or class         |
+| Method        | Function defined as part of a class                   |
+| Instance      | A particular object created from a class              |
+| Encapsulation | Bundling data/behavior and controlling access         |
+| Inheritance   | Creating a class based on another class               |
+| Polymorphism  | Same interface/operation working with different types |
+| Abstraction   | Hiding unnecessary implementation details             |
+
+Don't try to memorize all of these yet. We'll study each one separately.
+
+---
+
+# 1.9 OOP Is a Programming Paradigm
+
+OOP is a **programming paradigm**, meaning a way of structuring and thinking about programs.
+
+Python supports multiple programming styles, including:
+
+```text
+Procedural
+Functional
+Object-Oriented
+```
+
+Python is therefore **multi-paradigm**.
+
+You are not required to make every Python program fully object-oriented.
+
+For a small script:
+
+```python
+name = "Abhijit"
+print(f"Hello {name}")
+```
+
+using a class would often be unnecessary.
+
+For a larger application with many interacting entities, OOP may provide useful structure.
+
+---
+
+# 1.10 Common Confusion
+
+### OOP ≠ Just Classes
+
+Classes are an important mechanism for OOP, but OOP is broader than simply writing classes.
+
+It involves concepts such as:
+
+* objects
+* encapsulation
+* abstraction
+* inheritance
+* polymorphism
+* composition
+
+---
+
+### Class ≠ Object
+
+A class is the definition/blueprint.
+
+An object is an actual instance.
+
+```python
+class Car:
+    pass
+
+car1 = Car()
+car2 = Car()
+```
+
+Here:
+
+```text
+Car   → class
+car1  → object
+car2  → object
+```
+
+---
+
+### OOP ≠ Always Better
+
+OOP is a tool, not a rule.
+
+Use the programming style that makes the particular problem easier to understand, maintain, and extend.
+
+---
+
+# 1.11 Interview Answer
+
+### What is OOP?
+
+> **OOP, or Object-Oriented Programming, is a programming paradigm that organizes software around objects containing data and behavior. In Python, classes are used to define the structure and behavior of objects. OOP helps organize larger programs through concepts such as encapsulation, inheritance, polymorphism, abstraction, and composition.**
+
+### Why is OOP used?
+
+> **OOP helps structure complex applications by grouping related state and behavior, improving organization, reuse, maintainability, and extensibility.**
+
+### Is Python purely object-oriented?
+
+> **No. Python is a multi-paradigm language. It supports object-oriented, procedural, and functional programming styles.**
+
+---
+
+# 1.12 Backend / GenAI Relevance
+
+For your **Python → Backend → GenAI/Agentic AI** path, OOP is worth understanding deeply because real applications often contain many interacting components.
+
+For example:
+
+```text
+GenAI Application
+│
+├── LLM Client
+├── Prompt Manager
+├── Document Loader
+├── Embedding Model
+├── Vector Store
+├── Retriever
+├── Tool
+└── Agent
+```
+
+Each component can potentially be represented by a class/object with its own state and behavior.
+
+You don't need to force everything into classes, but understanding OOP will make larger Python codebases and frameworks much easier to read.
+
+---
+
+# 1.13 Final Mental Model
+
+Remember this:
+
+```text
+OOP
+│
+├── Organize program around OBJECTS
+│
+├── Object
+│   ├── Data → Attributes
+│   └── Behavior → Methods
+│
+├── Class
+│   └── Defines how objects are structured
+│
+└── Main Concepts
+    ├── Encapsulation
+    ├── Abstraction
+    ├── Inheritance
+    ├── Polymorphism
+    └── Composition
+```
+
+### One-line memory trick
+
+> **Object = data + behavior**
+
+---
+
+## Priority
+
+| Concept                      | Priority          |
+| ---------------------------- | ----------------- |
+| What is OOP?                 | 🔥 Core           |
+| Why OOP?                     | 🔥 Core           |
+| Object-oriented thinking     | 🔥 Core           |
+| Procedural vs OOP            | 🔥 Core           |
+| Real-world analogy           | 🔥 Core           |
+| When OOP is useful           | 🔥 Core           |
+| OOP terminology              | 🔥 Core           |
+| Benefits of OOP              | 🟡 Know & Move On |
+| Detailed paradigm comparison | 🟡 Know & Move On |
+
+
+
+                        ##############################################
+
+# 2. Class & Object 🔥 Core
+
+## 2.1 What is a Class?
+
+A **class** is a definition that describes the **data and behavior** that objects of that type can have.
+
+It defines things such as:
+
+* what data an object can contain
+* what operations/behavior it can perform
+
+Example:
+
+```python
+class Student:
+    pass
+```
+
+Here, `Student` is a **class**.
+
+But no actual student object has been created yet.
+
+### Mental Model
+
+Think of a class as a **design/template**:
+
+```text
+Class: Student
+       │
+       ├── Data
+       │   ├── name
+       │   ├── age
+       │   └── branch
+       │
+       └── Behavior
+           ├── study()
+           └── attend_class()
+```
+
+The class describes what a `Student` object can have and do.
+
+---
+
+# 2.2 What is an Object?
+
+An **object** is an actual instance of a class.
+
+If `Student` is the class:
+
+```python
+class Student:
+    pass
+```
+
+we can create objects:
+
+```python
+student1 = Student()
+student2 = Student()
+```
+
+Here:
+
+```text
+Student    → class
+student1   → object
+student2   → object
+```
+
+Both objects are instances of `Student`.
+
+### Important
+
+A class is the **definition**.
+
+An object is an **actual instance** created from that definition.
+
+---
+
+# 2.3 Class as a Blueprint
+
+A common analogy is:
+
+> **Class = blueprint**
+>
+> **Object = actual thing built from the blueprint**
+
+For example, imagine a house blueprint:
+
+```text
+House Blueprint
+      │
+      ├── rooms
+      ├── doors
+      ├── windows
+      └── structure
+```
+
+The blueprint isn't an actual house.
+
+It describes how houses can be constructed.
+
+From the same blueprint, you can build multiple houses:
+
+```text
+             House Class
+             (Blueprint)
+                  │
+       ┌──────────┼──────────┐
+       ↓          ↓          ↓
+    House 1    House 2    House 3
+```
+
+Similarly:
+
+```text
+             Student Class
+              (Definition)
+                   │
+       ┌───────────┼───────────┐
+       ↓           ↓           ↓
+   student1     student2     student3
+    object        object       object
+```
+
+Each object can have its own data.
+
+---
+
+# 2.4 Creating a Class
+
+Basic syntax:
+
+```python
+class ClassName:
+    # attributes
+    # methods
+    pass
+```
+
+Example:
+
+```python
+class Student:
+    pass
+```
+
+### Naming Convention
+
+Python convention is:
+
+```python
+class Student:
+    pass
+
+class BankAccount:
+    pass
+
+class LLMClient:
+    pass
+```
+
+Use **PascalCase / CapWords** for class names.
+
+---
+
+# 2.5 Creating Objects
+
+Objects are created by **calling the class**:
+
+```python
+student1 = Student()
+```
+
+This may look like calling a function, but `Student` is a class.
+
+```text
+Student()
+   ↓
+creates an object
+   ↓
+object assigned to student1
+```
+
+Example:
+
+```python
+class Student:
+    pass
+
+
+student1 = Student()
+student2 = Student()
+```
+
+Now:
+
+```python
+print(student1)
+print(student2)
+```
+
+will show representations containing their object identities, typically something like:
+
+```text
+<__main__.Student object at 0x...>
+<__main__.Student object at 0x...>
+```
+
+The exact representation/address is not something you should rely on.
+
+---
+
+# 2.6 What Actually Happens When We Create an Object?
+
+Consider:
+
+```python
+class Student:
+    pass
+
+student1 = Student()
+```
+
+Conceptually:
+
+### Step 1 — Python has the class
+
+```text
+Student
+   ↓
+class object
+```
+
+The `class` statement creates a class object and binds the name `Student` to it.
+
+### Step 2 — We call the class
+
+```python
+Student()
+```
+
+Python creates an instance of that class.
+
+### Step 3 — Reference is stored
+
+```python
+student1 = Student()
+```
+
+The name `student1` now refers to that object.
+
+Conceptually:
+
+```text
+Student
+   │
+   │ creates
+   ↓
+Student object
+   ↑
+   │
+student1
+```
+
+This distinction is important:
+
+> `student1` is a **name/reference** pointing to an object; the object itself is the instance of `Student`.
+
+---
+
+# 2.7 Multiple Objects from One Class
+
+One class can create many independent objects.
+
+```python
+class Student:
+    pass
+
+
+student1 = Student()
+student2 = Student()
+student3 = Student()
+```
+
+Conceptually:
+
+```text
+             Student
+               Class
+                │
+       ┌────────┼────────┐
+       ↓        ↓        ↓
+   Object 1  Object 2  Object 3
+      ↑          ↑         ↑
+  student1   student2  student3
+```
+
+The objects are separate instances.
+
+This is one of the major advantages of classes.
+
+---
+
+# 2.8 Objects Can Have Different State
+
+Let's give each object some data.
+
+```python
+class Student:
+    pass
+
+
+student1 = Student()
+student2 = Student()
+
+student1.name = "Abhijit"
+student2.name = "Rahul"
+```
+
+Now:
+
+```python
+print(student1.name)
+print(student2.name)
+```
+
+Output:
+
+```text
+Abhijit
+Rahul
+```
+
+Both objects belong to the same class:
+
+```python
+type(student1)
+type(student2)
+```
+
+but they contain different instance data.
+
+Conceptually:
+
+```text
+student1
+┌─────────────────┐
+│ name = Abhijit  │
+└─────────────────┘
+
+student2
+┌─────────────────┐
+│ name = Rahul    │
+└─────────────────┘
+```
+
+This **state** is stored separately for each object.
+
+> We'll study proper attribute creation and `self` in the next topics.
+
+---
+
+# 2.9 Class vs Object
+
+| Class                             | Object                                |
+| --------------------------------- | ------------------------------------- |
+| Definition/blueprint              | Actual instance                       |
+| Describes structure/behavior      | Contains actual state                 |
+| Used to create objects            | Created from a class                  |
+| Example: `Student`                | Example: `student1`                   |
+| One class can create many objects | Each object is an individual instance |
+
+### Simple analogy
+
+```text
+Class  → Student
+Object → Abhijit
+Object → Rahul
+Object → Priya
+```
+
+---
+
+# 2.10 Class vs Object in Code
+
+```python
+class Car:
+    pass
+
+car1 = Car()
+car2 = Car()
+```
+
+Here:
+
+```text
+Car
+ ↓
+Class
+
+car1
+ ↓
+Object / Instance
+
+car2
+ ↓
+Object / Instance
+```
+
+You can verify this:
+
+```python
+print(type(car1))
+```
+
+Conceptually:
+
+```text
+<class '__main__.Car'>
+```
+
+And:
+
+```python
+print(isinstance(car1, Car))
+```
+
+gives:
+
+```text
+True
+```
+
+`isinstance()` checks whether an object is an instance of a particular class (including relevant inheritance relationships).
+
+---
+
+# 2.11 A More Realistic Example
+
+Let's model a bank account:
+
+```python
+class BankAccount:
+    pass
+
+
+account1 = BankAccount()
+account2 = BankAccount()
+```
+
+We have:
+
+```text
+BankAccount
+     │
+     ├── account1
+     └── account2
+```
+
+Later, the class can define:
+
+```text
+Data:
+    owner
+    balance
+
+Behavior:
+    deposit()
+    withdraw()
+```
+
+So eventually:
+
+```python
+class BankAccount:
+
+    def deposit(self):
+        ...
+
+    def withdraw(self):
+        ...
+```
+
+The class defines what a bank-account object **can do**.
+
+---
+
+# 2.12 A Class Is Also an Object in Python
+
+This is an important Python concept.
+
+In Python, **classes themselves are objects too**.
+
+For example:
+
+```python
+class Student:
+    pass
+```
+
+`Student` refers to a class object.
+
+You can inspect it:
+
+```python
+print(type(Student))
+```
+
+For normal Python classes, you'll typically see:
+
+```text
+<class 'type'>
+```
+
+So conceptually:
+
+```text
+Student
+   ↓
+class object
+   ↓
+instance of type
+```
+
+While:
+
+```python
+student1 = Student()
+```
+
+gives:
+
+```text
+student1
+   ↓
+Student instance
+```
+
+Don't worry about `type`/metaclasses deeply yet. Just remember:
+
+> **In Python, classes are objects too.**
+
+We'll return to this when discussing Python's object model.
+
+---
+
+# 2.13 Important Terminology
+
+| Term           | Meaning                                             |
+| -------------- | --------------------------------------------------- |
+| Class          | Definition describing a type of object              |
+| Object         | An actual instance of a class                       |
+| Instance       | Another term for an object created from a class     |
+| Instance state | Data belonging to a particular object               |
+| Class object   | The object created by executing a `class` statement |
+| Instantiate    | Create an object from a class                       |
+
+For example:
+
+```python
+student = Student()
+```
+
+means:
+
+> We **instantiate** the `Student` class to create a `Student` object.
+
+---
+
+# 2.14 Common Confusions
+
+### Confusion 1: Class and object are the same
+
+They are not.
+
+```text
+Student → class
+student1 → object
+```
+
+---
+
+### Confusion 2: Class is just a blueprint
+
+"Blueprint" is a useful beginner mental model, but Python classes are more than passive blueprints.
+
+A class is an actual Python **class object** that defines behavior and participates in Python's object model.
+
+For learning OOP initially, however:
+
+> **Class = definition/template**
+>
+> **Object = instance created from it**
+
+is a good mental model.
+
+---
+
+### Confusion 3: `Student` vs `Student()`
+
+Very important:
+
+```python
+Student
+```
+
+refers to the **class object**.
+
+```python
+Student()
+```
+
+creates an **instance** of that class.
+
+Similar to the function distinction:
+
+```python
+func      # function object
+func()    # call the function
+```
+
+You can think:
+
+```text
+Student    → class
+Student()  → create an instance
+```
+
+---
+
+### Confusion 4: `student1` is the object itself
+
+At the beginner level we commonly say:
+
+> "`student1` is an object."
+
+More precisely:
+
+> `student1` is a **name/reference bound to a Student instance**.
+
+This distinction becomes important when learning Python's object model, mutability, and references.
+
+---
+
+# 2.15 Interview Questions
+
+### What is a class?
+
+> **A class is a Python definition that describes the structure and behavior of objects. It defines attributes and methods that instances of the class can have.**
+
+### What is an object?
+
+> **An object is an instance of a class. It is a concrete entity with its own state and access to the behavior defined by its class.**
+
+### What is the difference between a class and an object?
+
+> **A class defines what an object should look like and what it can do, while an object is an actual instance created from that class. A single class can be used to create many independent objects.**
+
+### What does `Student()` do?
+
+> **`Student()` creates an instance of the `Student` class. The resulting object can then be assigned to a name such as `student1`.**
+
+### Can a class create multiple objects?
+
+> **Yes. A single class can be instantiated multiple times, and each instance can maintain its own state.**
+
+---
+
+# 2.16 Backend / GenAI Relevance
+
+Classes become particularly useful as your Python applications become larger.
+
+For example, a GenAI application might have:
+
+```text
+Application
+│
+├── LLMClient
+├── Document
+├── EmbeddingModel
+├── VectorStore
+├── Retriever
+├── Tool
+└── Agent
+```
+
+Each can be represented by a class when that design makes sense.
+
+For example:
+
+```python
+class LLMClient:
+
+    def generate(self, prompt):
+        # call an LLM
+        ...
+```
+
+Then:
+
+```python
+client = LLMClient()
+```
+
+Here:
+
+```text
+LLMClient → class
+client    → object
+```
+
+Later, you'll learn how `__init__`, `self`, methods, inheritance, composition, and other OOP concepts make these objects useful in real applications.
+
+---
+
+# 2.17 Final Mental Model
+
+Remember this chain:
+
+```text
+CLASS
+  │
+  │ defines
+  ↓
+Structure + Behavior
+  │
+  │ instantiate
+  ↓
+OBJECT
+  │
+  ├── State / Data
+  └── Behavior
+```
+
+Example:
+
+```python
+class Student:
+    pass
+
+student1 = Student()
+student2 = Student()
+```
+
+Think:
+
+```text
+             Student
+               │
+             CLASS
+               │
+       ┌───────┴───────┐
+       ↓               ↓
+   student1         student2
+    OBJECT            OBJECT
+```
+
+### One-line memory trick
+
+> **Class = definition; Object = instance.**
+
+And an even more precise Python mental model:
+
+> **A class defines a type; an object is an instance of that type.**
+
+---
+
+## Priority
+
+| Concept                         | Priority           |
+| ------------------------------- | ------------------ |
+| What is a class?                | 🔥 Core            |
+| What is an object?              | 🔥 Core            |
+| Class vs object                 | 🔥 Core            |
+| Creating a class                | 🔥 Core            |
+| Creating objects                | 🔥 Core            |
+| Class as a blueprint            | 🔥 Core            |
+| Multiple objects from one class | 🔥 Core            |
+| Object state                    | 🔥 Core            |
+| `Student` vs `Student()`        | 🔥 Core            |
+| `isinstance()`                  | 🟡 Know & Move On  |
+| Classes are objects / `type`    | 🟡 Know & Move On  |
+| Metaclasses                     | ⚪ Optional for Now |
+
+
+
+        #########################################################
+
+
+        # 3. Attributes & Methods 🔥 Core
+
+## 3.1 What are Attributes?
+
+An **attribute** is a value/data associated with an object or class.
+
+For example, a student object may have:
+
+```text
+name
+age
+branch
+roll_number
+```
+
+These are attributes.
+
+Think:
+
+> **Attribute = data/state associated with an object.**
+
+Example:
+
+```python
+class Student:
+    pass
+
+
+student = Student()
+
+student.name = "Abhijit"
+student.age = 25
+student.branch = "CSE"
+```
+
+Now the object has:
+
+```text
+student
+│
+├── name   → "Abhijit"
+├── age    → 25
+└── branch → "CSE"
+```
+
+---
+
+# 3.2 Instance Attributes
+
+An **instance attribute** is an attribute that belongs to a particular object/instance.
+
+Example:
+
+```python
+class Student:
+    pass
+
+
+student1 = Student()
+student2 = Student()
+
+student1.name = "Abhijit"
+student2.name = "Rahul"
+```
+
+Now:
+
+```python
+print(student1.name)
+print(student2.name)
+```
+
+Output:
+
+```text
+Abhijit
+Rahul
+```
+
+Both objects are instances of the same class, but their `name` attributes contain different values.
+
+### Mental Model
+
+```text
+Student class
+      │
+      ├───────────────┐
+      ↓               ↓
+  student1         student2
+      │               │
+ name="Abhijit"    name="Rahul"
+```
+
+Each instance has its **own state**.
+
+---
+
+# 3.3 Where are Instance Attributes Usually Created?
+
+Although Python allows:
+
+```python
+student.name = "Abhijit"
+```
+
+the normal and recommended way to initialize instance attributes is inside `__init__()`.
+
+Example:
+
+```python
+class Student:
+
+    def __init__(self, name, age):
+        self.name = name
+        self.age = age
+```
+
+Then:
+
+```python
+student = Student("Abhijit", 25)
+```
+
+The object now has:
+
+```text
+name → "Abhijit"
+age  → 25
+```
+
+We'll study `__init__()` and `self` in detail in the next topic.
+
+For now, understand:
+
+```python
+self.name = name
+```
+
+creates/stores an attribute on the particular instance.
+
+---
+
+# 3.4 Accessing Attributes
+
+Use the **dot (`.`) operator** to access an attribute.
+
+```python
+student.name
+student.age
+```
+
+Example:
+
+```python
+class Student:
+
+    def __init__(self, name, age):
+        self.name = name
+        self.age = age
+
+
+student = Student("Abhijit", 25)
+
+print(student.name)
+print(student.age)
+```
+
+Output:
+
+```text
+Abhijit
+25
+```
+
+### General syntax
+
+```text
+object.attribute
+```
+
+Examples:
+
+```python
+student.name
+student.age
+account.balance
+car.speed
+```
+
+---
+
+# 3.5 Updating an Attribute
+
+Attributes can usually be changed by assigning a new value.
+
+```python
+student.age = 26
+```
+
+Now:
+
+```python
+print(student.age)
+```
+
+Output:
+
+```text
+26
+```
+
+Conceptually:
+
+```text
+Before:
+student
+  └── age → 25
+
+After:
+student
+  └── age → 26
+```
+
+This is one way an object's **state changes**.
+
+---
+
+# 3.6 What are Methods?
+
+A **method** is a function defined inside a class that represents behavior associated with that class/object.
+
+Example:
+
+```python
+class Student:
+
+    def study(self):
+        print("Student is studying")
+```
+
+Here:
+
+```text
+study()
+   ↓
+method
+```
+
+Create an object:
+
+```python
+student = Student()
+```
+
+Call the method:
+
+```python
+student.study()
+```
+
+Output:
+
+```text
+Student is studying
+```
+
+### Mental Model
+
+```text
+Object
+│
+├── Attributes → Data / State
+│
+└── Methods → Behavior
+```
+
+For example:
+
+```text
+Student
+│
+├── name       → "Abhijit"
+├── age        → 25
+│
+├── study()
+└── attend_class()
+```
+
+---
+
+# 3.7 Method vs Normal Function
+
+A method is essentially a function defined within a class and used as part of the class's behavior.
+
+### Normal function
+
+```python
+def add(a, b):
+    return a + b
+```
+
+Called as:
+
+```python
+add(10, 20)
+```
+
+### Method
+
+```python
+class Calculator:
+
+    def add(self, a, b):
+        return a + b
+```
+
+Called through an object:
+
+```python
+calculator = Calculator()
+
+calculator.add(10, 20)
+```
+
+The important difference is that a method is associated with a class/object and can interact with the object's state.
+
+---
+
+# 3.8 Calling Methods
+
+Use:
+
+```text
+object.method()
+```
+
+Example:
+
+```python
+class Student:
+
+    def study(self):
+        print("Studying...")
+
+
+student = Student()
+
+student.study()
+```
+
+Output:
+
+```text
+Studying...
+```
+
+Here:
+
+```text
+student
+   ↓
+.study()
+   ↓
+calls Student.study()
+```
+
+---
+
+# 3.9 Methods Can Work With Object Attributes
+
+This is where attributes and methods become powerful.
+
+```python
+class Student:
+
+    def __init__(self, name):
+        self.name = name
+
+    def introduce(self):
+        print(f"My name is {self.name}")
+```
+
+Create object:
+
+```python
+student = Student("Abhijit")
+```
+
+Call:
+
+```python
+student.introduce()
+```
+
+Output:
+
+```text
+My name is Abhijit
+```
+
+The method accesses the object's attribute:
+
+```python
+self.name
+```
+
+So:
+
+```text
+Object
+│
+├── name → "Abhijit"
+│
+└── introduce()
+        │
+        └── uses self.name
+```
+
+This is a fundamental OOP idea:
+
+> **Methods operate on or with the object's state.**
+
+---
+
+# 3.10 Why `self` Appears in Methods
+
+Consider:
+
+```python
+class Student:
+
+    def introduce(self):
+        print(self.name)
+```
+
+`self` refers to the **current instance** when the method is called as an instance method.
+
+Example:
+
+```python
+student1.introduce()
+```
+
+Inside the method, `self` refers to `student1`.
+
+If:
+
+```python
+student2.introduce()
+```
+
+then `self` refers to `student2`.
+
+Conceptually:
+
+```text
+student1.introduce()
+        ↓
+self = student1
+
+
+student2.introduce()
+        ↓
+self = student2
+```
+
+This allows the same method definition to work with different objects.
+
+> We'll study `self` deeply in the next topic.
+
+---
+
+# 3.11 Example: Two Objects, Different State
+
+```python
+class Student:
+
+    def __init__(self, name):
+        self.name = name
+
+    def introduce(self):
+        print(f"My name is {self.name}")
+
+
+student1 = Student("Abhijit")
+student2 = Student("Rahul")
+
+student1.introduce()
+student2.introduce()
+```
+
+Output:
+
+```text
+My name is Abhijit
+My name is Rahul
+```
+
+The method is the **same method definition**, but it operates on different object state.
+
+```text
+Student.introduce()
+       │
+       ├── student1 → self.name = Abhijit
+       │
+       └── student2 → self.name = Rahul
+```
+
+---
+
+# 3.12 Accessing Attributes Through Methods
+
+Methods can also modify attributes.
+
+```python
+class BankAccount:
+
+    def __init__(self, balance):
+        self.balance = balance
+
+    def deposit(self, amount):
+        self.balance += amount
+```
+
+Create:
+
+```python
+account = BankAccount(5000)
+```
+
+Current state:
+
+```text
+balance → 5000
+```
+
+Call:
+
+```python
+account.deposit(1000)
+```
+
+Now:
+
+```text
+balance → 6000
+```
+
+The method changed the object's state.
+
+This is a key OOP pattern:
+
+```text
+Method
+  ↓
+reads/modifies
+  ↓
+Object's state
+```
+
+---
+
+# 3.13 Attributes Can Be Different for Different Objects
+
+Example:
+
+```python
+class Car:
+
+    def __init__(self, brand, speed):
+        self.brand = brand
+        self.speed = speed
+```
+
+Create:
+
+```python
+car1 = Car("BMW", 120)
+car2 = Car("Toyota", 100)
+```
+
+Now:
+
+```text
+car1
+├── brand → BMW
+└── speed → 120
+
+car2
+├── brand → Toyota
+└── speed → 100
+```
+
+The class defines the structure, but each instance stores its own values.
+
+---
+
+# 3.14 Attribute Access vs Method Call
+
+This distinction is important.
+
+### Attribute
+
+```python
+student.name
+```
+
+You are **accessing data**.
+
+### Method
+
+```python
+student.study()
+```
+
+You are **calling behavior**.
+
+Notice the parentheses:
+
+```text
+student.name
+     ↑
+attribute
+
+
+student.study()
+     ↑
+method
+```
+
+A method is also an attribute lookup that gives you a callable method object when accessed through an instance, but at your current level, the practical distinction is:
+
+> **Attribute → data**
+>
+> **Method → behavior**
+
+---
+
+# 3.15 Common Mistakes
+
+### Mistake 1: Forgetting `self`
+
+Wrong:
+
+```python
+class Student:
+
+    def introduce():
+        print("Hello")
+```
+
+For an ordinary instance method, you need the instance parameter:
+
+```python
+class Student:
+
+    def introduce(self):
+        print("Hello")
+```
+
+---
+
+### Mistake 2: Using `name` instead of `self.name`
+
+Wrong:
+
+```python
+class Student:
+
+    def __init__(self, name):
+        self.name = name
+
+    def introduce(self):
+        print(name)
+```
+
+`name` is not automatically available inside `introduce()`.
+
+Correct:
+
+```python
+print(self.name)
+```
+
+because the attribute belongs to the current object.
+
+---
+
+### Mistake 3: Forgetting parentheses when calling a method
+
+```python
+student.study
+```
+
+This accesses the method attribute.
+
+```python
+student.study()
+```
+
+This calls the method.
+
+Similar to:
+
+```python
+func
+```
+
+vs
+
+```python
+func()
+```
+
+---
+
+### Mistake 4: Thinking all objects share instance attributes
+
+```python
+student1.name = "Abhijit"
+student2.name = "Rahul"
+```
+
+These are separate instance attributes.
+
+Changing:
+
+```python
+student1.name = "Amit"
+```
+
+doesn't automatically change:
+
+```python
+student2.name
+```
+
+---
+
+# 3.16 Important Terminology
+
+| Term               | Meaning                                                 |
+| ------------------ | ------------------------------------------------------- |
+| Attribute          | Data associated with an object/class                    |
+| Instance attribute | Attribute belonging to a particular object              |
+| Method             | Function defined in a class representing behavior       |
+| Object state       | Current values stored in an object                      |
+| Dot operator `.`   | Used to access attributes/methods                       |
+| `self`             | Reference to the current instance in an instance method |
+
+---
+
+# 3.17 Interview Answer
+
+### What is an attribute?
+
+> **An attribute is data associated with an object or class. An instance attribute represents state belonging to a particular object.**
+
+### What is a method?
+
+> **A method is a function defined inside a class that represents behavior associated with its objects.**
+
+### How do you access an attribute?
+
+> Using the dot operator:
+>
+> ```python
+> object.attribute
+> ```
+
+### How do you call a method?
+
+> Using the dot operator followed by parentheses:
+>
+> ```python
+> object.method()
+> ```
+
+### What is the relationship between attributes and methods?
+
+> **Attributes represent an object's state, while methods represent behavior that can read or modify that state.**
+
+---
+
+# 3.18 Backend / GenAI Relevance
+
+This pattern appears everywhere in larger Python applications.
+
+For example:
+
+```python
+class LLMClient:
+
+    def __init__(self, model):
+        self.model = model
+
+    def generate(self, prompt):
+        # use self.model
+        ...
+```
+
+Here:
+
+```text
+LLMClient
+│
+├── Attribute
+│   └── model
+│
+└── Method
+    └── generate()
+```
+
+A particular object can maintain configuration/state:
+
+```python
+client = LLMClient("some-model")
+```
+
+and methods can operate using that state:
+
+```python
+client.generate("Explain Python")
+```
+
+This same pattern appears in:
+
+* API clients
+* database connections
+* vector stores
+* retrievers
+* agents
+* tools
+* services
+* repositories
+
+---
+
+# 3.19 Final Mental Model
+
+The most important model to remember:
+
+```text
+                 OBJECT
+                   │
+          ┌────────┴────────┐
+          ↓                 ↓
+      ATTRIBUTES          METHODS
+       (State)           (Behavior)
+          │                 │
+          ↓                 ↓
+      name = ...         study()
+      age = ...          introduce()
+      balance = ...      deposit()
+```
+
+Example:
+
+```python
+class Student:
+
+    def __init__(self, name, age):
+        self.name = name
+        self.age = age
+
+    def introduce(self):
+        print(f"My name is {self.name}")
+
+
+student = Student("Abhijit", 25)
+
+print(student.name)       # attribute
+student.introduce()       # method
+```
+
+### One-line memory trick
+
+> **Attributes = what an object has; Methods = what an object does.**
+
+And:
+
+```text
+object.attribute  → access data
+object.method()   → perform behavior
+```
+
+---
+
+## Priority
+
+| Concept                        | Priority           |
+| ------------------------------ | ------------------ |
+| Instance attributes            | 🔥 Core            |
+| What is a method?              | 🔥 Core            |
+| Accessing attributes           | 🔥 Core            |
+| Calling methods                | 🔥 Core            |
+| Attributes vs methods          | 🔥 Core            |
+| Object state                   | 🔥 Core            |
+| Methods accessing object state | 🔥 Core            |
+| Basic `self` idea              | 🔥 Core            |
+| Dynamic attribute creation     | 🟡 Know & Move On  |
+| Advanced attribute lookup      | ⚪ Optional for Now |
+
+
