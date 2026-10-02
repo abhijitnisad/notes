@@ -19049,3 +19049,2525 @@ def method(...):
 | Instance vs class vs static | 🔥 Core |
 | Alternative constructors | 🟡 Know & Move On |
 | Descriptor/binding internals | ⚪ Optional for Now |
+
+
+######################################################################################
+
+
+# 10. Inheritance 🔥🔥 Core
+
+## 10.1 What is Inheritance?
+
+**Inheritance** is a mechanism where a new class can **reuse and extend** the attributes and methods of an existing class.
+
+The existing class is called the:
+
+- **Parent class**
+- **Base class**
+- **Super class**
+
+The new class is called the:
+
+- **Child class**
+- **Derived class**
+- **Sub class**
+
+Example:
+
+```python
+class Animal:
+    def eat(self):
+        print("Animal is eating")
+
+
+class Dog(Animal):
+    def bark(self):
+        print("Dog is barking")
+```
+
+Here:
+
+```text
+Animal
+  ↑
+  │ inherits from
+  │
+Dog
+```
+
+`Dog` can use the inherited `eat()` method:
+
+```python
+dog = Dog()
+
+dog.eat()
+dog.bark()
+```
+
+Output:
+
+```text
+Animal is eating
+Dog is barking
+```
+
+The important idea is:
+
+> **A child class can reuse behavior from its parent class and add its own behavior.**
+
+---
+
+# 10.2 Basic Syntax
+
+Inheritance is specified inside the class definition:
+
+```python
+class Child(Parent):
+    pass
+```
+
+Example:
+
+```python
+class Animal:
+    pass
+
+
+class Dog(Animal):
+    pass
+```
+
+The part:
+
+```python
+Dog(Animal)
+```
+
+means:
+
+> `Dog` inherits from `Animal`.
+
+---
+
+# 10.3 Parent / Base Class
+
+The class being inherited from is called the **parent** or **base class**.
+
+```python
+class Animal:
+
+    def eat(self):
+        print("Eating")
+```
+
+Here:
+
+```text
+Animal → Parent / Base class
+```
+
+It contains behavior that can be reused by child classes.
+
+---
+
+# 10.4 Child / Derived Class
+
+The class that inherits from another class is called the **child** or **derived class**.
+
+```python
+class Dog(Animal):
+
+    def bark(self):
+        print("Barking")
+```
+
+Here:
+
+```text
+Dog → Child / Derived class
+```
+
+`Dog` receives access to inherited behavior from `Animal`.
+
+---
+
+# 10.5 What Does a Child Class Actually Get?
+
+Consider:
+
+```python
+class Animal:
+
+    def eat(self):
+        print("Eating")
+
+
+class Dog(Animal):
+
+    def bark(self):
+        print("Barking")
+```
+
+`Dog` does not need to redefine `eat()`.
+
+So:
+
+```python
+dog = Dog()
+
+dog.eat()
+```
+
+works.
+
+Conceptually:
+
+```text
+Dog object
+    │
+    ↓
+Dog class
+    │
+    │ eat() not found here
+    ↓
+Animal class
+    │
+    │ eat() found
+    ↓
+execute Animal.eat()
+```
+
+This is an important connection to the **attribute lookup** you studied earlier.
+
+### Mental model
+
+> **Inheritance allows a child class to participate in the parent's attribute/method lookup path.**
+
+The complete lookup mechanism is more detailed and involves the **MRO**, which we'll study later.
+
+---
+
+# 10.6 Why Use Inheritance?
+
+Inheritance is mainly useful for:
+
+### 1. Code reuse
+
+Common behavior can be written once in the parent.
+
+```python
+class Animal:
+
+    def eat(self):
+        print("Eating")
+```
+
+Multiple children can reuse it:
+
+```python
+class Dog(Animal):
+    pass
+
+
+class Cat(Animal):
+    pass
+```
+
+Both can use:
+
+```python
+dog.eat()
+cat.eat()
+```
+
+---
+
+### 2. Extending existing behavior
+
+The child can add new methods.
+
+```python
+class Dog(Animal):
+
+    def bark(self):
+        print("Barking")
+```
+
+Now `Dog` has:
+
+```text
+Inherited:
+    eat()
+
+Own:
+    bark()
+```
+
+---
+
+### 3. Specializing behavior
+
+A general parent can represent common behavior, while children represent specialized versions.
+
+```text
+Animal
+├── Dog
+├── Cat
+└── Cow
+```
+
+The parent contains common functionality.
+
+Children can add or customize behavior.
+
+---
+
+### 4. Supporting polymorphism
+
+Inheritance often provides the structure for **method overriding and polymorphism**, which we'll study later.
+
+For example:
+
+```python
+class Animal:
+
+    def sound(self):
+        print("Some sound")
+
+
+class Dog(Animal):
+
+    def sound(self):
+        print("Bark")
+
+
+class Cat(Animal):
+
+    def sound(self):
+        print("Meow")
+```
+
+All three objects have a `sound()` method, but the behavior differs.
+
+---
+
+# 10.7 Important: Inheritance Is an "is-a" Relationship
+
+Inheritance is generally appropriate when the child **is a type of** the parent.
+
+For example:
+
+```text
+Dog is an Animal
+Cat is an Animal
+Car is a Vehicle
+Student is a Person
+```
+
+This gives:
+
+```text
+Dog → Animal
+```
+
+because a dog is an animal.
+
+But:
+
+```text
+Car → Engine
+```
+
+usually doesn't make sense as inheritance because:
+
+> A car **has an** engine.
+
+That's a **composition** relationship, not an inheritance relationship.
+
+We'll study composition later.
+
+### Memory rule
+
+```text
+"is-a"  → inheritance
+"has-a" → composition
+```
+
+---
+
+# 10.8 Single Inheritance 🔥
+
+**Single inheritance** means one child class inherits from one parent class.
+
+```text
+Parent
+   ↑
+Child
+```
+
+Example:
+
+```python
+class Animal:
+
+    def eat(self):
+        print("Eating")
+
+
+class Dog(Animal):
+
+    def bark(self):
+        print("Barking")
+```
+
+Here:
+
+```text
+Animal
+  ↑
+ Dog
+```
+
+`Dog` has access to:
+
+```python
+dog.eat()
+dog.bark()
+```
+
+---
+
+# 10.9 Single Inheritance Example
+
+```python
+class Vehicle:
+
+    def start(self):
+        print("Vehicle started")
+
+
+class Car(Vehicle):
+
+    def drive(self):
+        print("Car is driving")
+```
+
+Now:
+
+```python
+car = Car()
+
+car.start()
+car.drive()
+```
+
+Output:
+
+```text
+Vehicle started
+Car is driving
+```
+
+The child class has:
+
+```text
+Car
+├── start() → inherited
+└── drive() → its own method
+```
+
+---
+
+# 10.10 Multilevel Inheritance 🔥
+
+**Multilevel inheritance** occurs when inheritance forms a chain.
+
+```text
+Grandparent
+     ↑
+   Parent
+     ↑
+    Child
+```
+
+Example:
+
+```python
+class Animal:
+
+    def eat(self):
+        print("Eating")
+
+
+class Dog(Animal):
+
+    def bark(self):
+        print("Barking")
+
+
+class Puppy(Dog):
+
+    def play(self):
+        print("Playing")
+```
+
+Now:
+
+```python
+puppy = Puppy()
+```
+
+`Puppy` can access:
+
+```python
+puppy.eat()
+puppy.bark()
+puppy.play()
+```
+
+Why?
+
+```text
+Puppy
+  ↓
+Dog
+  ↓
+Animal
+```
+
+Python can search through this inheritance chain.
+
+---
+
+# 10.11 Multilevel Mental Model
+
+```text
+Animal
+│
+├── eat()
+│
+↓
+Dog
+│
+├── bark()
+│
+↓
+Puppy
+│
+└── play()
+```
+
+So a `Puppy` object can access:
+
+```text
+Puppy methods
+      ↓
+Dog methods
+      ↓
+Animal methods
+```
+
+### Important
+
+The child doesn't literally copy all parent methods into its own namespace.
+
+Instead, Python's attribute lookup can search through the inheritance hierarchy.
+
+This is why understanding namespaces and attribute lookup from previous topics matters here.
+
+---
+
+# 10.12 Multiple Inheritance 🔥
+
+**Multiple inheritance** means one child class inherits from **more than one parent class**.
+
+Syntax:
+
+```python
+class Child(Parent1, Parent2):
+    pass
+```
+
+Example:
+
+```python
+class Father:
+
+    def skills(self):
+        print("Driving")
+
+
+class Mother:
+
+    def hobbies(self):
+        print("Painting")
+
+
+class Child(Father, Mother):
+    pass
+```
+
+Now:
+
+```python
+child = Child()
+
+child.skills()
+child.hobbies()
+```
+
+Output:
+
+```text
+Driving
+Painting
+```
+
+The `Child` class inherits from both:
+
+```text
+Father
+   ↘
+     Child
+   ↗
+Mother
+```
+
+---
+
+# 10.13 Why Multiple Inheritance Can Become Complicated
+
+Suppose both parents have a method with the same name:
+
+```python
+class Father:
+
+    def show(self):
+        print("Father")
+
+
+class Mother:
+
+    def show(self):
+        print("Mother")
+
+
+class Child(Father, Mother):
+    pass
+```
+
+Now:
+
+```python
+child = Child()
+
+child.show()
+```
+
+Which `show()` should Python use?
+
+Python needs a defined order for searching the inheritance hierarchy.
+
+This is handled by the:
+
+> **Method Resolution Order (MRO)**
+
+For this example:
+
+```python
+print(Child.__mro__)
+```
+
+will show an order beginning conceptually like:
+
+```text
+Child → Father → Mother → object
+```
+
+Because the class was declared as:
+
+```python
+class Child(Father, Mother):
+```
+
+MRO is a major topic we'll study separately.
+
+---
+
+# 10.14 MRO Preview
+
+For now, remember only the basic idea:
+
+> **MRO determines the order in which Python searches classes for an attribute or method.**
+
+Example:
+
+```python
+class A:
+    x = 10
+
+
+class B(A):
+    pass
+```
+
+When:
+
+```python
+b = B()
+
+print(b.x)
+```
+
+Python can search:
+
+```text
+B
+ ↓
+A
+ ↓
+object
+```
+
+For multiple inheritance, the order becomes more important:
+
+```text
+Child
+  ↓
+Parent 1
+  ↓
+Parent 2
+  ↓
+object
+```
+
+The actual MRO rules are more sophisticated than simply "left to right," especially with diamond inheritance.
+
+We'll cover that later.
+
+---
+
+# 10.15 `object` — The Ultimate Base Class
+
+There is one more important concept.
+
+In Python 3, normal classes ultimately inherit from:
+
+```python
+object
+```
+
+For example:
+
+```python
+class Animal:
+    pass
+```
+
+is conceptually part of an inheritance hierarchy ending in:
+
+```text
+Animal
+   ↓
+object
+```
+
+You can see it:
+
+```python
+print(Animal.__mro__)
+```
+
+Typical result:
+
+```text
+(<class '__main__.Animal'>, <class 'object'>)
+```
+
+For:
+
+```python
+class Dog(Animal):
+    pass
+```
+
+the hierarchy becomes:
+
+```text
+Dog
+ ↓
+Animal
+ ↓
+object
+```
+
+This is why every normal Python class participates in an inheritance hierarchy.
+
+---
+
+# 10.16 Inherited Attributes vs Own Attributes
+
+Consider:
+
+```python
+class Animal:
+
+    species = "Animal"
+
+
+class Dog(Animal):
+
+    breed = "Labrador"
+```
+
+Create:
+
+```python
+dog = Dog()
+```
+
+Conceptually:
+
+```text
+Dog class
+└── breed → Labrador
+
+Animal class
+└── species → Animal
+```
+
+Now:
+
+```python
+dog.breed
+```
+
+finds:
+
+```text
+Dog
+```
+
+while:
+
+```python
+dog.species
+```
+
+can find:
+
+```text
+Animal
+```
+
+through inheritance.
+
+Again:
+
+> The child can access attributes from the parent, but those attributes are not necessarily stored in the child's namespace.
+
+---
+
+# 10.17 Inheritance + `__init__()`
+
+A common beginner question is:
+
+> "If a child inherits from a parent, does the parent's `__init__()` automatically run?"
+
+Not always.
+
+Example:
+
+```python
+class Parent:
+
+    def __init__(self):
+        print("Parent initialized")
+
+
+class Child(Parent):
+
+    def __init__(self):
+        print("Child initialized")
+```
+
+Now:
+
+```python
+child = Child()
+```
+
+Output:
+
+```text
+Child initialized
+```
+
+The child's `__init__()` overrides the inherited one.
+
+The parent initialization does not automatically execute just because inheritance exists.
+
+Later, we use:
+
+```python
+super()
+```
+
+to explicitly cooperate with the parent implementation.
+
+For example:
+
+```python
+class Child(Parent):
+
+    def __init__(self):
+        super().__init__()
+        print("Child initialized")
+```
+
+`super()` is a separate important topic.
+
+---
+
+# 10.18 Inheritance Does Not Mean Everything Is Copied
+
+This is an important mental model.
+
+Suppose:
+
+```python
+class Animal:
+
+    def eat(self):
+        print("Eating")
+
+
+class Dog(Animal):
+    pass
+```
+
+It is tempting to imagine:
+
+```text
+Dog
+├── eat()   ← copied from Animal
+```
+
+But a better mental model is:
+
+```text
+Dog
+  ↓
+attribute lookup
+  ↓
+Animal
+  ↓
+eat() found
+```
+
+The method remains defined in the parent class.
+
+This is why inheritance is closely connected to **attribute lookup and MRO**.
+
+---
+
+# 10.19 `isinstance()` and Inheritance
+
+Inheritance also affects `isinstance()`.
+
+```python
+class Animal:
+    pass
+
+
+class Dog(Animal):
+    pass
+
+
+dog = Dog()
+```
+
+Now:
+
+```python
+isinstance(dog, Dog)
+```
+
+returns:
+
+```text
+True
+```
+
+And:
+
+```python
+isinstance(dog, Animal)
+```
+
+also returns:
+
+```text
+True
+```
+
+because a `Dog` is an `Animal` through inheritance.
+
+Conceptually:
+
+```text
+Dog object
+    ↓
+Dog
+    ↓
+Animal
+```
+
+This is useful when checking whether an object belongs to a class or its inheritance hierarchy.
+
+---
+
+# 10.20 `issubclass()`
+
+Python also provides:
+
+```python
+issubclass()
+```
+
+which checks relationships between classes.
+
+Example:
+
+```python
+class Animal:
+    pass
+
+
+class Dog(Animal):
+    pass
+```
+
+Then:
+
+```python
+issubclass(Dog, Animal)
+```
+
+returns:
+
+```text
+True
+```
+
+But:
+
+```python
+issubclass(Animal, Dog)
+```
+
+returns:
+
+```text
+False
+```
+
+### Remember
+
+```text
+isinstance()
+    ↓
+object relationship
+
+issubclass()
+    ↓
+class relationship
+```
+
+---
+
+# 10.21 Types of Inheritance
+
+At your current level, remember these three:
+
+### 1. Single inheritance
+
+```text
+A
+↑
+B
+```
+
+One parent → one child.
+
+---
+
+### 2. Multilevel inheritance
+
+```text
+A
+↑
+B
+↑
+C
+```
+
+Inheritance chain.
+
+---
+
+### 3. Multiple inheritance
+
+```text
+A   B
+ \ /
+  C
+```
+
+One child → multiple parents.
+
+---
+
+# 10.22 Comparison
+
+| Type | Structure | Example |
+|---|---|---|
+| Single | `A → B` | `Dog(Animal)` |
+| Multilevel | `A → B → C` | `Puppy(Dog)`, `Dog(Animal)` |
+| Multiple | `A + B → C` | `Child(Father, Mother)` |
+
+---
+
+# 10.23 Real-World Example
+
+Consider a backend application:
+
+```python
+class APIClient:
+
+    def connect(self):
+        print("Connecting to API")
+
+
+class OpenAIClient(APIClient):
+
+    def generate(self):
+        print("Generating response")
+```
+
+Now:
+
+```python
+client = OpenAIClient()
+
+client.connect()
+client.generate()
+```
+
+The specialized client reuses common API behavior.
+
+Conceptually:
+
+```text
+APIClient
+│
+├── connect()
+│
+↓
+OpenAIClient
+│
+└── generate()
+```
+
+This pattern can be useful when several related classes share a genuine common abstraction.
+
+However, in real Python applications, don't automatically use inheritance just to reuse a few lines of code. **Composition** is often a better choice when the relationship is "has-a" rather than "is-a."
+
+---
+
+# 10.24 Inheritance vs Composition — Early Preview
+
+### Inheritance
+
+```text
+Dog is an Animal
+```
+
+```python
+class Dog(Animal):
+    pass
+```
+
+### Composition
+
+```text
+Car has an Engine
+```
+
+```python
+class Car:
+
+    def __init__(self):
+        self.engine = Engine()
+```
+
+So:
+
+```text
+"is-a"  → inheritance
+"has-a" → composition
+```
+
+We'll study composition separately.
+
+---
+
+# 10.25 Common Mistakes
+
+### Mistake 1: Thinking inheritance copies methods
+
+Incorrect mental model:
+
+```text
+Parent method copied into child
+```
+
+Better:
+
+```text
+Child lookup
+    ↓
+Parent
+    ↓
+method found
+```
+
+---
+
+### Mistake 2: Thinking parent's `__init__()` always runs
+
+It doesn't automatically run when the child defines its own `__init__()`.
+
+Use `super().__init__()` when parent initialization needs to be performed.
+
+---
+
+### Mistake 3: Using inheritance only for code reuse
+
+Inheritance should usually represent a meaningful **is-a relationship**.
+
+Don't create:
+
+```text
+Class B inherits Class A
+```
+
+only because A contains one convenient function.
+
+Composition or a standalone helper may be more appropriate.
+
+---
+
+### Mistake 4: Ignoring MRO in multiple inheritance
+
+When multiple parents contain the same method, Python needs a deterministic resolution order.
+
+That's what MRO handles.
+
+---
+
+# 10.26 Interview Questions
+
+### What is inheritance?
+
+> **Inheritance is an OOP mechanism where a child class derives from a parent class and can reuse, extend, or override its attributes and methods.**
+
+### What is a parent/base class?
+
+> **The class from which another class inherits is called the parent or base class.**
+
+### What is a child/derived class?
+
+> **A class that inherits from another class is called a child or derived class.**
+
+### Why is inheritance used?
+
+> **It allows related classes to share common behavior and enables specialization, extension, and polymorphism.**
+
+### What is single inheritance?
+
+> **When a class inherits from one parent class.**
+
+### What is multilevel inheritance?
+
+> **When inheritance forms a chain, such as `A → B → C`.**
+
+### What is multiple inheritance?
+
+> **When a class inherits from more than one parent class, such as `class C(A, B)`.**
+
+### What is MRO?
+
+> **Method Resolution Order is the order Python follows when searching the inheritance hierarchy for an attribute or method.**
+
+### Does Python support multiple inheritance?
+
+> **Yes. Python supports multiple inheritance and uses MRO to determine method lookup order.**
+
+### What is the difference between `isinstance()` and `issubclass()`?
+
+> **`isinstance()` checks an object's relationship with a class, while `issubclass()` checks the relationship between two classes.**
+
+---
+
+# 10.27 Final Mental Model
+
+Think of inheritance as a **lookup relationship**, not simply copying.
+
+```text
+                    object
+                       ↑
+                    Animal
+                       ↑
+                      Dog
+                       ↑
+                    Puppy
+```
+
+If you have:
+
+```python
+puppy = Puppy()
+```
+
+and write:
+
+```python
+puppy.eat()
+```
+
+Python can conceptually search:
+
+```text
+puppy
+  ↓
+Puppy
+  ↓
+Dog
+  ↓
+Animal
+  ↓
+object
+```
+
+until it finds `eat()`.
+
+For multiple inheritance:
+
+```text
+        Father      Mother
+           \         /
+            \       /
+             Child
+               ↑
+             object
+```
+
+Python uses **MRO** to determine the exact search order.
+
+---
+
+# 10.28 The 5 Things to Remember
+
+```text
+1. Parent/Base class
+   → class being inherited from
+
+2. Child/Derived class
+   → class that inherits
+
+3. Single inheritance
+   → one parent
+
+4. Multilevel inheritance
+   → inheritance chain
+
+5. Multiple inheritance
+   → multiple parents
+```
+
+And the most important mental model:
+
+> **Inheritance allows a child class to reuse and extend a parent's behavior, while Python's attribute lookup searches through the inheritance hierarchy when necessary.**
+
+---
+
+## Priority
+
+| Concept | Priority |
+|---|---|
+| Meaning of inheritance | 🔥🔥 Core |
+| Parent / base class | 🔥🔥 Core |
+| Child / derived class | 🔥🔥 Core |
+| Why inheritance | 🔥 Core |
+| `class Child(Parent)` syntax | 🔥🔥 Core |
+| Inherited methods/attributes | 🔥🔥 Core |
+| Single inheritance | 🔥 Core |
+| Multilevel inheritance | 🔥 Core |
+| Multiple inheritance | 🔥 Core |
+| `isinstance()` with inheritance | 🟡 Know & Move On |
+| `issubclass()` | 🟡 Know & Move On |
+| `object` as base class | 🟡 Know & Move On |
+| MRO details | 🟡 Know & Move On — deeper later |
+| `super()` | 🔥 Core — next related topic |
+| Composition vs inheritance | 🟡 Know & Move On — deeper later |
+
+
+#############################################################################
+
+
+# 11. Method Overriding 🔥 Core
+
+## 11.1 What is Method Overriding?
+
+**Method overriding** occurs when a child class defines a method with the **same name** as a method already defined in its parent class.
+
+The child provides its own implementation of that behavior.
+
+Example:
+
+```python
+class Animal:
+
+    def sound(self):
+        print("Some generic sound")
+
+
+class Dog(Animal):
+
+    def sound(self):
+        print("Bark")
+```
+
+Here both classes have:
+
+```python
+sound()
+```
+
+But `Dog` provides its own implementation.
+
+Now:
+
+```python
+dog = Dog()
+
+dog.sound()
+```
+
+Output:
+
+```text
+Bark
+```
+
+The child's `sound()` overrides the parent's `sound()` for `Dog` objects.
+
+### Mental model
+
+```text
+Parent
+└── sound() → "Some generic sound"
+
+        ↓ overridden by
+
+Child
+└── sound() → "Bark"
+```
+
+---
+
+# 11.2 Why Is It Called "Overriding"?
+
+The parent already defines:
+
+```python
+sound()
+```
+
+The child defines another:
+
+```python
+sound()
+```
+
+with the same method name.
+
+When Python looks up:
+
+```python
+dog.sound()
+```
+
+it finds the implementation associated with `Dog` before reaching `Animal`.
+
+So the child's implementation **overrides** the inherited behavior.
+
+---
+
+# 11.3 Basic Example
+
+```python
+class Animal:
+
+    def sound(self):
+        print("Animal makes a sound")
+
+
+class Dog(Animal):
+
+    def sound(self):
+        print("Dog barks")
+```
+
+Create objects:
+
+```python
+animal = Animal()
+dog = Dog()
+```
+
+Now:
+
+```python
+animal.sound()
+```
+
+Output:
+
+```text
+Animal makes a sound
+```
+
+But:
+
+```python
+dog.sound()
+```
+
+Output:
+
+```text
+Dog barks
+```
+
+Why?
+
+```text
+animal
+  ↓
+Animal.sound()
+
+dog
+  ↓
+Dog.sound()
+  ↓
+found immediately
+```
+
+The parent implementation still exists. It is simply not the one selected for normal `dog.sound()` lookup.
+
+---
+
+# 11.4 Overriding Does Not Delete the Parent Method
+
+This is an important point.
+
+Suppose:
+
+```python
+class Parent:
+
+    def show(self):
+        print("Parent")
+
+
+class Child(Parent):
+
+    def show(self):
+        print("Child")
+```
+
+The parent method still exists:
+
+```python
+Parent.show
+```
+
+The child has its own:
+
+```python
+Child.show
+```
+
+Conceptually:
+
+```text
+Parent
+└── show() → "Parent"
+
+Child
+└── show() → "Child"
+```
+
+So overriding means:
+
+> **The child provides a different implementation for the same inherited behavior.**
+
+It does not physically remove the parent method.
+
+---
+
+# 11.5 How Python Finds the Overridden Method
+
+This connects directly to the attribute lookup and inheritance concepts you've already learned.
+
+Consider:
+
+```python
+class Animal:
+
+    def sound(self):
+        print("Animal")
+
+
+class Dog(Animal):
+
+    def sound(self):
+        print("Dog")
+```
+
+When:
+
+```python
+dog.sound()
+```
+
+is executed, Python looks through the object's class hierarchy.
+
+Simplified:
+
+```text
+dog
+ ↓
+Dog
+ ↓
+sound found
+ ↓
+Dog.sound()
+```
+
+Python doesn't need to continue to:
+
+```text
+Animal
+```
+
+because it already found `sound()` in `Dog`.
+
+### Simplified rule
+
+> **During method lookup, the child class is searched before its parent according to the inheritance hierarchy/MRO.**
+
+---
+
+# 11.6 Overriding and `self`
+
+The overriding method normally has the same instance-method structure:
+
+```python
+class Parent:
+
+    def show(self):
+        print("Parent")
+
+
+class Child(Parent):
+
+    def show(self):
+        print("Child")
+```
+
+Both receive:
+
+```python
+self
+```
+
+because both are instance methods.
+
+The important difference is the implementation.
+
+```text
+Parent.show()
+    ↓
+Parent behavior
+
+Child.show()
+    ↓
+Child behavior
+```
+
+---
+
+# 11.7 Method Overriding vs Method Overloading
+
+These are different concepts.
+
+### Overriding
+
+Child replaces/redefines inherited behavior:
+
+```python
+class Parent:
+    def show(self):
+        print("Parent")
+
+
+class Child(Parent):
+    def show(self):
+        print("Child")
+```
+
+### Overloading
+
+Traditionally means defining multiple methods with the same name but different parameter lists.
+
+Python does **not** support traditional method overloading in the same way as languages such as Java.
+
+For example, this does not create two overloads:
+
+```python
+class Calculator:
+
+    def add(self, a):
+        pass
+
+    def add(self, a, b):
+        pass
+```
+
+The second `add()` replaces the first definition in the class namespace.
+
+For now, remember:
+
+```text
+Overriding
+→ inheritance relationship
+→ child redefines parent method
+
+Traditional overloading
+→ multiple signatures
+→ not directly supported like Java/C++
+```
+
+---
+
+# 11.8 Runtime Polymorphism 🔥
+
+Method overriding is closely connected to **runtime polymorphism**.
+
+Let's break the term down.
+
+### Poly
+
+Means:
+
+> many
+
+### Morph
+
+Means:
+
+> forms
+
+So polymorphism means:
+
+> **The same interface/method call can produce different behavior depending on the object involved.**
+
+Example:
+
+```python
+class Animal:
+
+    def sound(self):
+        print("Some sound")
+
+
+class Dog(Animal):
+
+    def sound(self):
+        print("Bark")
+
+
+class Cat(Animal):
+
+    def sound(self):
+        print("Meow")
+```
+
+Now:
+
+```python
+dog = Dog()
+cat = Cat()
+
+dog.sound()
+cat.sound()
+```
+
+Output:
+
+```text
+Bark
+Meow
+```
+
+The method call is the same:
+
+```python
+object.sound()
+```
+
+but the behavior depends on the actual object.
+
+---
+
+# 11.9 Why Is This "Runtime" Polymorphism?
+
+The important part is **runtime**.
+
+Consider:
+
+```python
+def make_sound(animal):
+    animal.sound()
+```
+
+Now:
+
+```python
+dog = Dog()
+cat = Cat()
+
+make_sound(dog)
+make_sound(cat)
+```
+
+The function doesn't need to know:
+
+```text
+"If dog → call Dog.sound()
+ If cat → call Cat.sound()"
+```
+
+It simply calls:
+
+```python
+animal.sound()
+```
+
+The actual object's implementation is selected at runtime.
+
+Conceptually:
+
+```text
+make_sound(dog)
+      ↓
+animal = Dog object
+      ↓
+animal.sound()
+      ↓
+Dog.sound()
+
+make_sound(cat)
+      ↓
+animal = Cat object
+      ↓
+animal.sound()
+      ↓
+Cat.sound()
+```
+
+That's the core idea behind runtime polymorphism.
+
+---
+
+# 11.10 The Same Method Call, Different Behavior
+
+This is the easiest way to understand polymorphism:
+
+```python
+dog.sound()
+cat.sound()
+```
+
+Both use:
+
+```python
+.sound()
+```
+
+but:
+
+```text
+Dog → Bark
+Cat → Meow
+```
+
+So:
+
+```text
+Same interface
+      ↓
+Different implementation
+      ↓
+Different behavior
+```
+
+---
+
+# 11.11 A Better Example
+
+```python
+class Payment:
+
+    def pay(self):
+        print("Processing payment")
+
+
+class UPI(Payment):
+
+    def pay(self):
+        print("Processing UPI payment")
+
+
+class Card(Payment):
+
+    def pay(self):
+        print("Processing card payment")
+
+
+class Cash(Payment):
+
+    def pay(self):
+        print("Processing cash payment")
+```
+
+Now:
+
+```python
+def process_payment(payment):
+    payment.pay()
+```
+
+Call:
+
+```python
+process_payment(UPI())
+process_payment(Card())
+process_payment(Cash())
+```
+
+Output:
+
+```text
+Processing UPI payment
+Processing card payment
+Processing cash payment
+```
+
+The function:
+
+```python
+process_payment()
+```
+
+doesn't need separate logic for every payment type.
+
+It simply expects an object that provides:
+
+```python
+pay()
+```
+
+This is polymorphism in action.
+
+---
+
+# 11.12 Important: Python Is Dynamically Typed
+
+Python doesn't require:
+
+```python
+def process_payment(payment: Payment):
+```
+
+for this to work.
+
+Even this can work:
+
+```python
+class Bitcoin:
+
+    def pay(self):
+        print("Processing Bitcoin payment")
+```
+
+Then:
+
+```python
+process_payment(Bitcoin())
+```
+
+works because the object provides the required behavior.
+
+This leads to another important Python concept:
+
+> **Duck typing**
+
+We'll study duck typing later.
+
+So Python can achieve polymorphic behavior through both:
+
+- inheritance
+- compatible behavior/interfaces
+
+---
+
+# 11.13 Method Overriding With Different Arguments
+
+For a clean override, the child method should generally preserve a compatible calling interface.
+
+Example:
+
+```python
+class Animal:
+
+    def sound(self):
+        print("Animal sound")
+
+
+class Dog(Animal):
+
+    def sound(self):
+        print("Bark")
+```
+
+This is straightforward.
+
+Be careful with:
+
+```python
+class Animal:
+
+    def sound(self, volume):
+        print("Animal sound")
+
+
+class Dog(Animal):
+
+    def sound(self):
+        print("Bark")
+```
+
+Now the child has changed the expected arguments.
+
+This can cause problems if code expects every `Animal` to support:
+
+```python
+animal.sound(volume)
+```
+
+A good overriding design should preserve the behavioral expectations of the parent interface.
+
+This idea becomes important when we study **polymorphism and the Liskov Substitution Principle** later.
+
+---
+
+# 11.14 Calling the Parent Implementation
+
+Sometimes the child wants to add behavior rather than completely replace the parent behavior.
+
+Example:
+
+```python
+class Animal:
+
+    def sound(self):
+        print("Animal sound")
+
+
+class Dog(Animal):
+
+    def sound(self):
+        super().sound()
+        print("Dog barks")
+```
+
+Now:
+
+```python
+dog = Dog()
+
+dog.sound()
+```
+
+Output:
+
+```text
+Animal sound
+Dog barks
+```
+
+Here:
+
+```python
+super().sound()
+```
+
+calls the parent implementation according to Python's method-resolution mechanism.
+
+### Mental model
+
+```text
+Dog.sound()
+    ↓
+super().sound()
+    ↓
+parent implementation
+    ↓
+continue child implementation
+```
+
+`super()` is an important topic of its own, so we'll cover it separately.
+
+---
+
+# 11.15 Complete Example: Parent + Child + Polymorphism
+
+```python
+class Animal:
+
+    def sound(self):
+        print("Some animal sound")
+
+
+class Dog(Animal):
+
+    def sound(self):
+        print("Bark")
+
+
+class Cat(Animal):
+
+    def sound(self):
+        print("Meow")
+
+
+def make_sound(animal):
+    animal.sound()
+```
+
+Now:
+
+```python
+make_sound(Dog())
+make_sound(Cat())
+make_sound(Animal())
+```
+
+Output:
+
+```text
+Bark
+Meow
+Some animal sound
+```
+
+Notice that `make_sound()` has only one line of important logic:
+
+```python
+animal.sound()
+```
+
+It doesn't need to check the object's class manually.
+
+That's one of the major benefits of polymorphism.
+
+---
+
+# 11.16 Without Polymorphism
+
+You could write:
+
+```python
+def make_sound(animal):
+
+    if isinstance(animal, Dog):
+        print("Bark")
+
+    elif isinstance(animal, Cat):
+        print("Meow")
+
+    elif isinstance(animal, Animal):
+        print("Some sound")
+```
+
+This approach becomes difficult to maintain as more animal types are added.
+
+With polymorphism:
+
+```python
+def make_sound(animal):
+    animal.sound()
+```
+
+Each class owns its own behavior.
+
+### Design idea
+
+Instead of:
+
+```text
+Central function decides behavior
+```
+
+we can use:
+
+```text
+Each object provides its own behavior
+```
+
+This is a major OOP design principle.
+
+---
+
+# 11.17 Overriding vs Shadowing
+
+These two concepts are easy to confuse.
+
+### Attribute shadowing
+
+You learned earlier:
+
+```python
+class Student:
+    college = "TIT"
+
+
+student = Student()
+
+student.college = "RGPV"
+```
+
+Here the **instance attribute** shadows the class attribute.
+
+### Method overriding
+
+With inheritance:
+
+```python
+class Animal:
+    def sound(self):
+        print("Animal")
+
+
+class Dog(Animal):
+    def sound(self):
+        print("Dog")
+```
+
+Here the **child class method** overrides the parent method.
+
+So:
+
+```text
+Shadowing
+→ usually instance attribute hides class attribute
+
+Overriding
+→ child class redefines inherited method
+```
+
+---
+
+# 11.18 Method Overriding vs Method Reuse
+
+Without overriding:
+
+```python
+class Dog(Animal):
+    pass
+```
+
+`Dog` simply inherits the parent's implementation.
+
+```text
+Dog
+ ↓
+Animal.sound()
+```
+
+With overriding:
+
+```python
+class Dog(Animal):
+
+    def sound(self):
+        print("Bark")
+```
+
+Now:
+
+```text
+Dog
+ ↓
+Dog.sound()
+```
+
+The parent's version is still available through the parent class and can potentially be reached explicitly using mechanisms such as `super()`.
+
+---
+
+# 11.19 Real-World Backend / GenAI Example
+
+Suppose you have different LLM providers.
+
+```python
+class LLMProvider:
+
+    def generate(self, prompt):
+        print("Generating response")
+```
+
+Different providers can implement their own behavior:
+
+```python
+class OpenAIProvider(LLMProvider):
+
+    def generate(self, prompt):
+        print("Generating using OpenAI")
+
+
+class GeminiProvider(LLMProvider):
+
+    def generate(self, prompt):
+        print("Generating using Gemini")
+```
+
+Now:
+
+```python
+def generate_response(provider, prompt):
+    provider.generate(prompt)
+```
+
+You can pass:
+
+```python
+generate_response(
+    OpenAIProvider(),
+    "Explain Python"
+)
+
+generate_response(
+    GeminiProvider(),
+    "Explain Python"
+)
+```
+
+The caller doesn't need to know the internal implementation of each provider.
+
+It only needs the common operation:
+
+```python
+generate()
+```
+
+This is the kind of abstraction that becomes useful when building systems that can work with multiple implementations.
+
+---
+
+# 11.20 Common Mistakes
+
+### Mistake 1: Thinking overriding deletes the parent method
+
+It doesn't.
+
+Both methods still exist:
+
+```text
+Parent.sound()
+Child.sound()
+```
+
+The child's method is selected for child objects through normal lookup.
+
+---
+
+### Mistake 2: Thinking overriding requires a special decorator
+
+Python does **not** require an `@override` decorator to override a method.
+
+Simply defining the same method name in the child class is enough.
+
+```python
+class Child(Parent):
+
+    def show(self):
+        print("Child")
+```
+
+Some projects may use optional tooling/decorators to explicitly mark overrides, but Python's basic overriding mechanism does not require one.
+
+---
+
+### Mistake 3: Confusing overriding with overloading
+
+```text
+Overriding
+→ parent-child relationship
+
+Overloading
+→ same method name with different signatures
+```
+
+Python does not provide traditional method overloading like Java.
+
+---
+
+### Mistake 4: Manually checking every subclass
+
+Avoid unnecessary code like:
+
+```python
+if isinstance(obj, Dog):
+    ...
+elif isinstance(obj, Cat):
+    ...
+```
+
+when each class can implement the same method interface.
+
+Polymorphism often lets the object determine its own behavior.
+
+---
+
+# 11.21 Interview Questions
+
+### What is method overriding?
+
+> **Method overriding occurs when a child class provides its own implementation of a method that is already defined in its parent class.**
+
+### Why is method overriding used?
+
+> **It allows a child class to specialize or replace inherited behavior while keeping the same method interface.**
+
+### What is runtime polymorphism?
+
+> **Runtime polymorphism is the ability to use the same method call/interface with different objects and have the appropriate implementation execute based on the actual object at runtime.**
+
+### How is overriding related to polymorphism?
+
+> **Overriding allows different child classes to provide different implementations of the same parent method, which enables runtime polymorphic behavior.**
+
+### Does Python require an override keyword?
+
+> **No. Python does not require a special keyword to override a method. Defining a method with the same name in the child class is sufficient.**
+
+### Can a child still call the parent's overridden method?
+
+> **Yes. The parent implementation can be explicitly accessed, commonly using `super()` when appropriate.**
+
+---
+
+# 11.22 Final Mental Model
+
+Think of inheritance + overriding like this:
+
+```text
+                 Animal
+                    │
+                 sound()
+              "Some sound"
+                    │
+          ┌─────────┴─────────┐
+          ↓                   ↓
+         Dog                 Cat
+       sound()              sound()
+        "Bark"               "Meow"
+```
+
+Then:
+
+```python
+def make_sound(animal):
+    animal.sound()
+```
+
+The caller doesn't need to know whether `animal` is:
+
+```text
+Dog
+Cat
+Animal
+```
+
+It simply says:
+
+```python
+animal.sound()
+```
+
+and the appropriate implementation runs.
+
+### The core relationship
+
+```text
+Inheritance
+    ↓
+Child gets parent's behavior
+    ↓
+Overriding
+    ↓
+Child changes that behavior
+    ↓
+Polymorphism
+    ↓
+Same method call → different behavior
+```
+
+---
+
+## One-Line Interview Memory
+
+> **Method overriding is when a child class redefines a parent method, allowing the same method call to produce behavior specific to the actual object at runtime.**
+
+---
+
+## Priority
+
+| Concept | Priority |
+|---|---|
+| What is method overriding | 🔥 Core |
+| Child replacing parent behavior | 🔥 Core |
+| Overriding with inheritance | 🔥 Core |
+| Method lookup in child before parent | 🔥 Core |
+| Runtime polymorphism | 🔥🔥 Core |
+| Same interface, different behavior | 🔥 Core |
+| `super()` preview | 🟡 Know & Move On |
+| Overriding vs overloading | 🟡 Know & Move On |
+| Duck typing | 🟡 Know & Move On — later |
+| MRO internals | 🟡 Know & Move On — later |
+| Liskov Substitution Principle | ⚪ Optional for Now |
