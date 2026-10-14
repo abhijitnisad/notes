@@ -24099,3 +24099,895 @@ A
 | C3 linearization concept | 🟡 Know & Move On |
 | Calculating complex C3 manually | ⚪ Optional for Now |
 | Descriptor-level lookup | ⚪ Optional for Now |
+
+
+###########################################################################
+
+# 14. Composition 🔥🔥 Core
+
+## 14.1 What Is Composition?
+
+**Composition** is an OOP technique in which one object contains or owns another object to provide its functionality.
+
+It represents a **"Has-a" relationship**.
+
+For example:
+
+- A `Car` has an `Engine`.
+- A `Computer` has a `CPU`.
+- A `House` has `Room` objects.
+- An AI application has an `LLMClient`.
+
+### Real-world mental model
+
+```text
+Car
+ ├── Engine
+ ├── Battery
+ └── Transmission
+```
+
+A car is not an engine. It *has* an engine.
+
+In Python, we can represent this relationship by creating an object of one class inside another class.
+
+## 14.2 Creating an Object Inside Another Object
+
+Example:
+
+```python
+class Engine:
+
+    def start(self):
+        print("Engine started")
+
+
+class Car:
+
+    def __init__(self):
+        self.engine = Engine()
+
+    def start(self):
+        self.engine.start()
+        print("Car is ready")
+```
+
+Create and use the car:
+
+```python
+car = Car()
+car.start()
+```
+
+Output:
+
+```text
+Engine started
+Car is ready
+```
+
+### How it works
+
+1. `Engine` defines engine-related behavior.
+2. `Car` creates an `Engine` object inside `__init__()`.
+3. `self.engine` stores a reference to that engine object.
+4. `Car.start()` delegates engine startup to `self.engine.start()`.
+
+Object relationship:
+
+```text
+car ──references──> Car object
+                       │
+                       └── engine ──> Engine object
+```
+
+**Important:** `self.engine = Engine()` stores a reference to the created engine object. It doesn't copy the `Engine` class into the `Car` object.
+
+## 14.3 Composition With Dependency Injection
+
+The component doesn't always need to create its own dependency. We can pass the object into the constructor instead.
+
+```python
+class Engine:
+
+    def start(self):
+        print("Engine started")
+
+
+class Car:
+
+    def __init__(self, engine):
+        self.engine = engine
+
+    def start(self):
+        self.engine.start()
+        print("Car is ready")
+
+
+engine = Engine()
+car = Car(engine)
+
+car.start()
+```
+
+Output:
+
+```text
+Engine started
+Car is ready
+```
+
+Here:
+
+```python
+car = Car(engine)
+```
+
+passes an existing object into `Car`.
+
+This pattern is called **dependency injection**: an object receives the dependency it needs rather than creating it internally.
+
+Why is this useful?
+
+- You can replace the engine implementation.
+- You can test `Car` with a fake engine.
+- You can configure dependencies independently.
+- The `Car` class becomes less tightly coupled to a specific engine implementation.
+
+Composition and dependency injection are closely related, but they are not identical: composition is the object relationship; dependency injection is one way to supply the related object.
+
+## 14.4 Composition vs Inheritance
+
+This is the most important distinction.
+
+### Inheritance — "Is-a"
+
+```python
+class Animal:
+
+    def eat(self):
+        print("Eating")
+
+
+class Dog(Animal):
+    pass
+
+
+dog = Dog()
+dog.eat()
+```
+
+Relationship:
+
+```text
+Dog IS AN Animal
+```
+
+`Dog` inherits the behavior of `Animal`.
+
+### Composition — "Has-a"
+
+```python
+class Battery:
+
+    def charge(self):
+        print("Battery charging")
+
+
+class Phone:
+
+    def __init__(self):
+        self.battery = Battery()
+
+    def charge(self):
+        self.battery.charge()
+```
+
+Relationship:
+
+```text
+Phone HAS A Battery
+```
+
+`Phone` uses a separate `Battery` object.
+
+### Comparison
+
+| Inheritance | Composition |
+|---|---|
+| Represents an "is-a" relationship | Represents a "has-a" relationship |
+| Child inherits from a parent | Object holds references to other objects |
+| Reuses or specializes inherited behavior | Combines functionality from separate objects |
+| Can create tight coupling to a base class | Often allows more flexible component replacement |
+| Useful for genuine subtype relationships | Useful for assembling objects with different responsibilities |
+
+## 14.5 Why Is Composition Useful?
+
+### 1. Reusability
+
+One component can be used by several different classes.
+
+```python
+class Logger:
+
+    def log(self, message):
+        print(f"LOG: {message}")
+
+
+class UserService:
+
+    def __init__(self, logger):
+        self.logger = logger
+
+    def create_user(self):
+        self.logger.log("User created")
+
+
+class PaymentService:
+
+    def __init__(self, logger):
+        self.logger = logger
+
+    def process_payment(self):
+        self.logger.log("Payment processed")
+```
+
+Both services reuse `Logger` without inheriting from it.
+
+### 2. Flexibility
+
+You can change the object that provides a service without redesigning the class hierarchy.
+
+```python
+class EmailNotifier:
+
+    def send(self, message):
+        print(f"Email: {message}")
+
+
+class SMSNotifier:
+
+    def send(self, message):
+        print(f"SMS: {message}")
+
+
+class AlertService:
+
+    def __init__(self, notifier):
+        self.notifier = notifier
+
+    def alert(self, message):
+        self.notifier.send(message)
+```
+
+Usage:
+
+```python
+email_alert = AlertService(EmailNotifier())
+sms_alert = AlertService(SMSNotifier())
+
+email_alert.alert("Server is down")
+sms_alert.alert("Server is down")
+```
+
+The `AlertService` doesn't need to inherit from `EmailNotifier` or `SMSNotifier`. It uses whichever compatible object it receives.
+
+### 3. Easier testing
+
+You can pass a fake dependency during testing.
+
+```python
+class FakeNotifier:
+
+    def send(self, message):
+        print(f"Test notification: {message}")
+
+
+service = AlertService(FakeNotifier())
+service.alert("Test message")
+```
+
+This makes it easier to test application logic without sending real emails or SMS messages.
+
+### 4. Separation of responsibilities
+
+Each class can focus on one job:
+
+```text
+AlertService
+    └── decides when to alert
+
+EmailNotifier
+    └── sends email
+
+SMSNotifier
+    └── sends SMS
+```
+
+This is easier to maintain than putting every responsibility into one large class.
+
+## 14.6 Composition in Backend and GenAI
+
+Suppose you're building a Python application that generates answers using an LLM.
+
+```python
+class Retriever:
+
+    def retrieve(self, question):
+        return ["Relevant document"]
+
+
+class LLMClient:
+
+    def generate(self, question, context):
+        return f"Answer to: {question}"
+
+
+class RAGApplication:
+
+    def __init__(self, retriever, llm):
+        self.retriever = retriever
+        self.llm = llm
+
+    def answer(self, question):
+        context = self.retriever.retrieve(question)
+        return self.llm.generate(question, context)
+
+
+retriever = Retriever()
+llm = LLMClient()
+
+app = RAGApplication(retriever, llm)
+
+print(app.answer("What is Python?"))
+```
+
+Output:
+
+```text
+Answer to: What is Python?
+```
+
+Object structure:
+
+```text
+RAGApplication
+ ├── Retriever
+ │    └── retrieve()
+ └── LLMClient
+      └── generate()
+```
+
+The `RAGApplication` coordinates the work while the other objects handle their individual responsibilities.
+
+This is a simplified example, but the same design idea appears in backend services, API clients, retrieval systems, and agentic AI applications.
+
+## 14.7 Composition vs Inheritance: How to Choose
+
+Ask yourself:
+
+**Question 1: Is the child genuinely a specialized type of the parent?**
+
+Example: `Dog` is an `Animal`.
+
+Inheritance may be appropriate.
+
+**Question 2: Does the class need another object's functionality?**
+
+Example: `Car` uses an `Engine`.
+
+Composition is usually more appropriate.
+
+**Question 3: Might the dependency need to be replaced or mocked?**
+
+Composition with dependency injection often makes that easier.
+
+### General guideline
+
+> **Favor composition over inheritance when you want to combine functionality without creating a genuine "is-a" relationship.**
+
+This is a design guideline, not an absolute rule. Inheritance remains useful when the subtype relationship is meaningful and the child can honor the parent's expected behavior.
+
+## 14.8 Does Composition Mean the Objects Must Have the Same Lifetime?
+
+Not necessarily.
+
+Composition is commonly described as a strong "has-a" relationship, but Python itself does not enforce ownership or lifetime rules.
+
+For example:
+
+```python
+engine = Engine()
+car = Car(engine)
+```
+
+The same `engine` object could also be referenced by another variable or object.
+
+If a component can exist independently and is shared, the relationship may be better described as **aggregation** in some OOP models. The terminology varies between languages and design methods.
+
+For your current level, focus on the practical idea: one object holds a reference to and uses another object.
+
+## 14.9 Common Mistakes
+
+**Mistake 1: Confusing "is-a" and "has-a"**
+
+- `Dog` is an `Animal` → inheritance.
+- `Car` has an `Engine` → composition.
+
+**Mistake 2: Assuming composition requires creating the dependency inside `__init__()`**
+
+You can create it internally:
+
+```python
+self.engine = Engine()
+```
+
+Or receive it from outside:
+
+```python
+self.engine = engine
+```
+
+Both can form a composition-style design.
+
+**Mistake 3: Thinking composition always means ownership**
+
+An object reference alone doesn't guarantee exclusive ownership or a shared lifetime.
+
+**Mistake 4: Using inheritance just to reuse a few methods**
+
+If the relationship isn't genuinely "is-a," composition may produce a cleaner design.
+
+## 14.10 Interview Questions
+
+**What is composition in Python?**
+
+Composition is an OOP technique in which an object contains references to other objects and uses their functionality to perform its work.
+
+**What is a "has-a" relationship?**
+
+It describes a relationship where one object contains or uses another object, such as a `Car` having an `Engine`.
+
+**What is the difference between composition and inheritance?**
+
+Inheritance models an "is-a" relationship and reuses or specializes parent behavior. Composition models a "has-a" relationship by combining objects.
+
+**Why is composition often preferred over inheritance?**
+
+It can reduce tight coupling to base classes, improve flexibility, separate responsibilities, and make dependencies easier to replace and test.
+
+**What is dependency injection?**
+
+Dependency injection is a technique in which an object receives the dependencies it needs from outside instead of creating them internally.
+
+## Final Mental Model
+
+```text
+Inheritance
+    ↓
+"Is-a"
+    ↓
+Dog inherits from Animal
+
+
+Composition
+    ↓
+"Has-a"
+    ↓
+Car uses an Engine
+```
+
+**One-line interview memory:**
+
+> Composition is an OOP technique in which an object uses other objects to build its functionality, representing a "has-a" relationship and often improving flexibility and testability.
+
+## Priority
+
+| Concept | Priority |
+|---|---|
+| "Has-a" relationship | 🔥🔥 Core |
+| Object inside another object | 🔥🔥 Core |
+| Composition vs inheritance | 🔥🔥 Core |
+| Why composition is useful | 🔥🔥 Core |
+| Dependency injection | 🔥 Core |
+| Composition in backend/GenAI | 🔥 Core |
+| Aggregation and object lifetime terminology | ⚪ Optional for Now |
+
+
+############################################################################################
+
+
+# 15. Encapsulation 🔥 Core
+
+## 15.1 What Is Encapsulation?
+
+**Encapsulation** is the practice of keeping data and the methods that operate on that data together, while providing a clear interface for interacting with the object.
+
+It helps protect an object's internal state from accidental misuse and makes code easier to maintain.
+
+Example: A bank account should not allow its balance to become negative through an invalid withdrawal.
+
+```python
+class BankAccount:
+
+    def __init__(self, balance):
+        self._balance = balance
+
+    def deposit(self, amount):
+        if amount > 0:
+            self._balance += amount
+
+    def get_balance(self):
+        return self._balance
+
+
+account = BankAccount(1000)
+account.deposit(500)
+
+print(account.get_balance())  # 1500
+```
+
+Here, the account's data and related behavior are kept inside one class. The `deposit()` method provides a controlled way to change the balance.
+
+**Important:** `_balance` is a naming convention, not a strict access restriction. Python still allows `account._balance` to be accessed directly.
+
+## 15.2 Public Attributes
+
+A **public attribute** can be accessed directly from outside the class.
+
+In Python, ordinary attribute names without leading underscores are public by convention.
+
+```python
+class Student:
+
+    def __init__(self, name, age):
+        self.name = name
+        self.age = age
+
+
+student = Student("Abhijit", 21)
+
+print(student.name)
+print(student.age)
+
+student.age = 22
+print(student.age)
+```
+
+Output:
+
+```text
+Abhijit
+21
+22
+```
+
+Here, `name` and `age` are public attributes.
+
+### When to use public attributes?
+
+Use them when direct access is appropriate and there is no need for additional validation or control.
+
+For example:
+
+```python
+student.name = "Rahul"
+```
+
+This is simple and readable, but any value can be assigned unless you add some form of validation.
+
+## 15.3 Protected Attributes — `_attribute`
+
+In Python, a **single leading underscore** indicates that an attribute is intended for internal use.
+
+```python
+class Employee:
+
+    def __init__(self, name, salary):
+        self.name = name
+        self._salary = salary
+
+
+employee = Employee("Aman", 30000)
+
+print(employee.name)
+print(employee._salary)  # Accessible, but intended for internal use
+```
+
+The underscore communicates:
+
+> This attribute is an implementation detail. External code should generally avoid depending on it.
+
+Python does not enforce protected access. The attribute remains accessible.
+
+This convention is particularly useful when designing classes that may be extended through inheritance.
+
+```python
+class Employee:
+
+    def __init__(self, salary):
+        self._salary = salary
+
+
+class Manager(Employee):
+
+    def show_salary(self):
+        print(self._salary)
+```
+
+The subclass can access `_salary`, as expected.
+
+**Remember:** `_salary` is a convention, not a security mechanism.
+
+## 15.4 Private Attributes — `__attribute`
+
+A **double leading underscore** triggers name mangling in ordinary Python class definitions.
+
+```python
+class BankAccount:
+
+    def __init__(self, balance):
+        self.__balance = balance
+
+    def get_balance(self):
+        return self.__balance
+
+
+account = BankAccount(5000)
+
+print(account.get_balance())  # 5000
+```
+
+But this normally fails:
+
+```python
+print(account.__balance)
+```
+
+Python raises an `AttributeError` because the attribute is stored under a mangled name rather than the literal name `__balance`.
+
+This helps avoid accidental access and name collisions, particularly in inheritance.
+
+**Important:** Double underscores do not make an attribute truly inaccessible or secure. Python uses name mangling rather than strict private access control.
+
+## 15.5 What Is Name Mangling?
+
+**Name mangling** is Python's mechanism for transforming certain names that begin with at least two leading underscores and do not end with two trailing underscores.
+
+Inside a class named `BankAccount`, the attribute:
+
+```python
+self.__balance = balance
+```
+
+is effectively stored under a name like:
+
+```python
+self._BankAccount__balance
+```
+
+Example:
+
+```python
+class BankAccount:
+
+    def __init__(self, balance):
+        self.__balance = balance
+
+
+account = BankAccount(5000)
+
+print(account.__dict__)
+print(account._BankAccount__balance)
+```
+
+Output:
+
+```text
+{'_BankAccount__balance': 5000}
+5000
+```
+
+The second line works because the mangled name can still be accessed directly. This is a demonstration of Python's behavior, **not a recommended way to access private-style attributes**.
+
+### Why does name mangling exist?
+
+One major purpose is to prevent accidental name clashes between a base class and a subclass.
+
+```python
+class Parent:
+
+    def __init__(self):
+        self.__value = "Parent value"
+
+
+class Child(Parent):
+
+    def __init__(self):
+        super().__init__()
+        self.__value = "Child value"
+
+
+obj = Child()
+
+print(obj.__dict__)
+```
+
+Output:
+
+```text
+{
+    '_Parent__value': 'Parent value',
+    '_Child__value': 'Child value'
+}
+```
+
+The two attributes coexist because their names are mangled differently.
+
+Without name mangling, both classes using the same ordinary attribute name could unintentionally overwrite each other's state.
+
+### Which names are mangled?
+
+| Attribute | Mangled? |
+|---|---|
+| `name` | No |
+| `_name` | No |
+| `__name` | Yes, in a class context |
+| `__name__` | No — conventionally a special or dunder name |
+
+Name mangling is based on the class name, with leading underscores in the class name stripped for the transformation. It is not a security feature.
+
+## 15.6 Public vs Protected vs Private
+
+| Naming style | Example | Meaning |
+|---|---|---|
+| Public | `self.name` | Intended for normal external use |
+| Protected convention | `self._salary` | Intended for internal or subclass use |
+| Private-style | `self.__balance` | Name-mangled to reduce accidental clashes |
+
+### Easy way to remember
+
+- `name` → public
+- `_name` → internal-use convention
+- `__name` → name mangling
+
+Python generally relies on conventions and developer discipline rather than strict access modifiers like `private` in Java.
+
+## 15.7 Encapsulation With Controlled Access
+
+Suppose a bank account must prevent invalid withdrawals. Directly exposing the balance as an unrestricted public attribute makes that rule harder to enforce.
+
+A better design can use a property:
+
+```python
+class BankAccount:
+
+    def __init__(self, balance):
+        self._balance = balance
+
+    @property
+    def balance(self):
+        return self._balance
+
+    def deposit(self, amount):
+        if amount <= 0:
+            raise ValueError("Amount must be positive")
+
+        self._balance += amount
+
+    def withdraw(self, amount):
+        if amount <= 0:
+            raise ValueError("Amount must be positive")
+
+        if amount > self._balance:
+            raise ValueError("Insufficient balance")
+
+        self._balance -= amount
+
+
+account = BankAccount(1000)
+
+account.deposit(500)
+account.withdraw(200)
+
+print(account.balance)  # 1300
+```
+
+Here:
+
+- `_balance` is an internal-use attribute by convention.
+- `@property` exposes a read-only interface named `balance`.
+- `deposit()` and `withdraw()` enforce business rules.
+- `account.balance` looks like normal attribute access, but calls the property's getter.
+
+Notice that `@property` makes the public interface convenient; it does not make `_balance` inaccessible. A caller could still deliberately assign `account._balance = -100`.
+
+For a writable property, you can define a setter with `@balance.setter`. We'll study `@property` in detail separately.
+
+## 15.8 Why Is Encapsulation Useful?
+
+**1. Data integrity**
+
+Methods can validate values before modifying internal state.
+
+**2. Reduced accidental misuse**
+
+Underscore conventions communicate which attributes are implementation details.
+
+**3. Easier maintenance**
+
+You can change the internal implementation while keeping the public interface stable.
+
+**4. Clear responsibilities**
+
+A class controls the rules for changing its own state.
+
+**5. Safer inheritance**
+
+Name mangling reduces accidental attribute-name collisions between base classes and subclasses.
+
+### Backend and GenAI relevance
+
+For example, an API client might keep its internal configuration or retry state under underscore-prefixed names and expose public methods such as `generate()`.
+
+A service can validate requests through methods rather than allowing arbitrary changes to its internal state.
+
+Encapsulation improves code organization and correctness, but it is **not a replacement for security controls**, authentication, authorization, or secret management.
+
+## 15.9 Common Interview Questions
+
+**Q1. What is encapsulation?**
+
+Encapsulation combines data and related behavior within a class and provides a controlled interface for interacting with an object's state.
+
+**Q2. Does Python support private variables?**
+
+Python supports private-style names through double-leading-underscore name mangling. It does not enforce strict private access in the same way as languages with access modifiers.
+
+**Q3. What is the difference between `_name` and `__name`?**
+
+`_name` is a convention indicating internal use. `__name` triggers name mangling inside a class, which helps avoid accidental name clashes.
+
+**Q4. Is name mangling the same as data security?**
+
+No. It changes the attribute's name to reduce accidental collisions. It does not prevent deliberate access.
+
+**Q5. Why is encapsulation useful?**
+
+It helps maintain data integrity, reduces accidental misuse, separates public interfaces from implementation details, and makes classes easier to maintain.
+
+**Q6. Does encapsulation require every attribute to be private?**
+
+No. Public attributes are appropriate when direct access is safe and simple. Use internal conventions and controlled methods where they provide a genuine benefit.
+
+## Final Mental Model
+
+```text
+Encapsulation
+    |
+    ├── Public:  name
+    |      └── Normal direct access
+    |
+    ├── Protected convention: _name
+    |      └── Intended for internal use
+    |
+    └── Private-style: __name
+           └── Name mangling
+               └── Helps prevent accidental name clashes
+```
+
+**One-line interview answer:**
+
+Encapsulation keeps data and its related behavior together and provides a clear interface for working with object state. Python uses naming conventions and name mangling to discourage accidental misuse, but these do not provide strict private access control.
+
+## Priority
+
+| Concept | Priority |
+|---|---|
+| Encapsulation and its purpose | 🔥 Core |
+| Public attributes | 🔥 Core |
+| `_protected` naming convention | 🔥 Core |
+| `__private` and name mangling | 🔥 Core |
+| Encapsulation with validation | 🔥 Core |
+| `@property` and setters | 🔥 Core — study separately |
+| Security implications and advanced internals | 🟡 Know & Move On |
